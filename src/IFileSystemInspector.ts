@@ -3,6 +3,6 @@ export type FileInfo = {
     path: Path,
     isDirectory: boolean
 };
-export interface IFilesystemInspector {
+export interface IFileSystemInspector {
     ls(path: Path): FileInfo[];
 }
