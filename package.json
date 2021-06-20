@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run buildTests && mocha spec/dist/*.js --exit",
     "deploy": "rm -rf dist && rm -rf out && npm run build && npm run deployDefs && cp package.json dist && cp README.md dist",
-    "deployDefs": "tsc && cp out/*.d.ts dist",
+    "deployDefs": "tsc --emitDeclarationOnly && cp -r out/* dist/",
     "build": "parcel build --no-source-maps src/LanguageFeatures.ts -o index.js",
     "buildTests": "parcel build --no-source-maps spec/*.ts --out-dir spec/dist"
   },
@@ -33,9 +33,9 @@
     "lodash": "^4.17.20",
     "mocha": "^9.0.1",
     "parcel": "1.12.3",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.4",
+    "@types/chai": "^4.2.19"
   },
   "dependencies": {
-    "@types/chai": "^4.2.19"
   }
 }
