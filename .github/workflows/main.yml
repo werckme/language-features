@@ -22,6 +22,8 @@ jobs:
           node-version: 14     
       - name: prepare
         run: npm install
+      - name: test
+        run: npm run test        
       - name: build
         run: npm run deploy
       - uses: actions/upload-artifact@v2
