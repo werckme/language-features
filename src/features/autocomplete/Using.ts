@@ -24,9 +24,9 @@ export class Using implements IAutoComplete {
         const files = await this.fileInspector.ls(searchPath);
         let result = files
             .filter(file => file.isDirectory 
-                || SupportedUsingFileExtensions.includes(getFileExtension(file.path)))
+                || SupportedUsingFileExtensions.includes(getFileExtension(file.name)))
         if (!!filename) {
-            result = result.filter(file => file.path.indexOf(filename) >= 0)
+            result = result.filter(file => file.name.indexOf(filename) >= 0)
         }
         return result
             .sort((a: FileInfo, b: FileInfo) => {
@@ -36,10 +36,10 @@ export class Using implements IAutoComplete {
                 if (!a.isDirectory && b.isDirectory) {
                     return 1;
                 }
-                return a.path.localeCompare(b.path);
+                return a.name.localeCompare(b.name);
             })
             .map(file => ({
-                text: file.path,
+                text: file.name,
                 file: file
             }));
     }

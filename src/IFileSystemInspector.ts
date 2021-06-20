@@ -1,6 +1,6 @@
 export type Path = string;
 export type FileInfo = {
-    path: Path,
+    name: string,
     isDirectory: boolean
 };
 export interface IFileSystemInspector {

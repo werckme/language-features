@@ -13,12 +13,12 @@ import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
 const expect = chai.expect;
 
 
-function file(path: string): FileInfo {
-  return {path: path, isDirectory: false};
+function file(name: string): FileInfo {
+  return {name: name, isDirectory: false};
 } 
 
-function dir(path: string): FileInfo {
-  return {path: path, isDirectory: true};
+function dir(name: string): FileInfo {
+  return {name: name, isDirectory: true};
 } 
 
 class FileSystemInspectorMock implements IFileSystemInspector {
