@@ -255,5 +255,24 @@ describe('should return files and directories', () => {
     doc.documentPath = "/sub/testDoc.sheet";
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(5);
-  });  
+  });
+  it('return filter from beginning', async () => {
+    const fs = new FileSystemInspectorMock({ '/': [
+      file("lua.file"),
+      file("file.template"),
+      file("file.chords"),
+      file("file.pitchmap"),
+      file("file.config")
+    ]});
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument('using "/file');
+    const suggestions = await toTest.autoComplete(doc);
+    expect(suggestions.length).to.equal(4);
+    expect(suggestions.map(x => x.text)).to.contains.all.members([
+      "file.template",
+      "file.chords",
+      "file.pitchmap",
+      "file.config"
+    ]);
+  });
 });
