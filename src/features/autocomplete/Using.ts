@@ -19,7 +19,11 @@ export class Using implements IAutoComplete {
         const filename = typingPath ? _.last(typingPath.split('/')) : "";
         let documentPath = await document.getAbsolutePath();
         documentPath = await this.fileInspector.getParentPath(documentPath);
-        let searchPath = await this.fileInspector.getParentPath(typingPath);
+        let searchPath = typingPath;
+        if (!!filename) {
+            searchPath = await this.fileInspector.getParentPath(typingPath);
+        }
+        searchPath = searchPath.replace('../', await this.fileInspector.getParentPath(documentPath));
         searchPath = searchPath.replace('./', documentPath);
         const files = await this.fileInspector.ls(searchPath);
         let result = files

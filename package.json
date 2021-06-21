@@ -6,8 +6,10 @@
   "scripts": {
     "test": "npm run buildTests && mocha spec/dist/*.js --exit",
     "deploy": "rm -rf dist && rm -rf out && npm run build && npm run deployDefs && cp package.json dist && cp README.md dist",
+    "deployDev": "rm -rf dist && rm -rf out && npm run buildDev && npm run deployDefs && cp package.json dist && cp README.md dist",
     "deployDefs": "tsc --emitDeclarationOnly && cp -r out/* dist/",
     "build": "parcel build --no-source-maps src/LanguageFeatures.ts -o index.js",
+    "buildDev": "parcel build --no-minify src/LanguageFeatures.ts -o index.js",
     "buildTests": "parcel build --no-source-maps spec/*.ts --out-dir spec/dist"
   },
   "repository": {

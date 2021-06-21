@@ -9,7 +9,6 @@ import { IActiveSourceDocument,
 from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
-
 const expect = chai.expect;
 
 
@@ -24,8 +23,10 @@ function dir(name: string): FileInfo {
 class FileSystemInspectorMock implements IFileSystemInspector {
   constructor(private fs: {[dir: string]: FileInfo[]}) {}
   async getParentPath(path: string): Promise<string> {
+    path = path.trim().replace(/\/$/, '');
     const segments = path.split('/');
-    return segments.slice(0, segments.length - 1).join('/') + '/';
+    const result = segments.slice(0, segments.length - 1).join('/') + '/';
+    return result;
   }
   async ls(path: Path): Promise<FileInfo[]> {
     return this.fs[path] || [];
@@ -71,7 +72,7 @@ describe('should return files and directories', () => {
       file("file.config")
     ]});
     const toTest = new LanguageFeatures(fs);
-    const doc = new TestDocument('using "');
+    const doc = new TestDocument('using "/');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(5);
   });
@@ -80,7 +81,7 @@ describe('should return files and directories', () => {
       file("file.sheet")
     ]});
     const toTest = new LanguageFeatures(fs);
-    const doc = new TestDocument('using "');
+    const doc = new TestDocument('using "/');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(0);
   });
@@ -116,7 +117,7 @@ describe('should return files and directories', () => {
       dir("dir"),
     ]});
     const toTest = new LanguageFeatures(fs);
-    const doc = new TestDocument('using "');
+    const doc = new TestDocument('using "/');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(1);
   });
@@ -240,5 +241,19 @@ describe('should return files and directories', () => {
     expect(suggestions[1].text).to.equal("01.lua");
     expect((suggestions[0] as IPathSuggestion).file.isDirectory).to.equal(true);
     expect((suggestions[1] as IPathSuggestion).file.isDirectory).to.equal(false);
-  });      
+  });
+  it('return resolved relative parent path', async () => {
+    const fs = new FileSystemInspectorMock({ '/': [
+      file("file.lua"),
+      file("file.template"),
+      file("file.chords"),
+      file("file.pitchmap"),
+      file("file.config")
+    ]});
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument('using "../');
+    doc.documentPath = "/sub/testDoc.sheet";
+    const suggestions = await toTest.autoComplete(doc);
+    expect(suggestions.length).to.equal(5);
+  });  
 });
