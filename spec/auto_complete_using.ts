@@ -258,10 +258,10 @@ describe('should return files and directories', () => {
   });
   it('return filter from beginning', async () => {
     const fs = new FileSystemInspectorMock({ '/': [
-      file("lua.file"),
       file("file.template"),
       file("file.chords"),
       file("file.pitchmap"),
+      file("my.file.lua"),
       file("file.config")
     ]});
     const toTest = new LanguageFeatures(fs);

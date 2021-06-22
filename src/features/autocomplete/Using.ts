@@ -30,7 +30,7 @@ export class Using implements IAutoComplete {
             .filter(file => file.isDirectory 
                 || SupportedUsingFileExtensions.includes(getFileExtension(file.name)))
         if (!!filename) {
-            result = result.filter(file => file.name.indexOf(filename) >= 0)
+            result = result.filter(file => file.name.startsWith(filename))
         }
         return result
             .sort((a: FileInfo, b: FileInfo) => {
