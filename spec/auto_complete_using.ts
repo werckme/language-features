@@ -275,4 +275,11 @@ describe('should return files and directories', () => {
       "file.config"
     ]);
   });
+  it('return without error', async () => {
+    const fs = new FileSystemInspectorMock({ '/': []});
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument('using ');
+    const suggestions = await toTest.autoComplete(doc);
+    expect(suggestions.length).to.equal(0);
+  });  
 });

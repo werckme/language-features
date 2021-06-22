@@ -16,6 +16,9 @@ export class Using implements IAutoComplete {
             return [];
         }
         const typingPath = (line.match(/.+"(.*)/) || [])[1];
+        if (!typingPath) {
+            return [];
+        }
         const filename = typingPath ? _.last(typingPath.split('/')) : "";
         let documentPath = await document.getAbsolutePath();
         documentPath = await this.fileInspector.getParentPath(documentPath);
