@@ -25,7 +25,7 @@ jobs:
       - name: prepare
         run: npm install
       - name: generate auto hint db
-        run: npm run buildAutoHintDb  
+        run: mkdir data && npm run buildAutoHintDb  
       - name: test
         run: npm run test        
       - name: build
