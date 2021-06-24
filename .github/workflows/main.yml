@@ -24,6 +24,8 @@ jobs:
         run: git submodule update --init  && git submodule update --remote        
       - name: prepare
         run: npm install
+      - name: generate auto hint db
+        run: npm run buildAutoHintDb  
       - name: test
         run: npm run test        
       - name: build
