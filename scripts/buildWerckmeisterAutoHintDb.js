@@ -7,7 +7,6 @@ var dree = require('dree');
 var docParser_1 = require("../src/parser/docParser");
 var docParser = new docParser_1.DocParser();
 function onFile(el) {
-    //console.log(el)
     var txt = fs.readFileSync(el.path, { encoding: 'utf8', flag: 'r' });
     if (el.extension === 'lua') {
         docParser.parseLua(txt);

@@ -20,7 +20,15 @@ var Command = /** @class */ (function () {
     Command.prototype.getDescription = function () { var _a, _b; return (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['#']; };
     Command.prototype.getParameter = function () {
         var _a, _b;
-        return (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.param) || []).map(function (x) { return new CommandParameter(x); });
+        var params = (_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.param;
+        if (!params) {
+            return [];
+        }
+        if (!Array.isArray(params)) {
+            // happens if only one object exists
+            params = [params];
+        }
+        return (params || []).map(function (x) { return new CommandParameter(x); });
     };
     return Command;
 }());

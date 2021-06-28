@@ -7,7 +7,6 @@ import { DocParser, parseCommandDbJson } from '../src/parser/docParser';
 const docParser = new DocParser();
 
 function onFile(el) {
-    //console.log(el)
     const txt = fs.readFileSync(el.path, {encoding:'utf8', flag:'r'});
     if (el.extension === 'lua') {
         docParser.parseLua(txt);

@@ -1,3 +1,4 @@
+import { CommandArgument } from "./features/autocomplete/CommandArgument";
 import { ISuggestion } from "./features/autocomplete/ISuggestion";
 import { Using } from "./features/autocomplete/Using";
 import { FileInfo, IFileSystemInspector } from "./IFileSystemInspector";
@@ -7,7 +8,8 @@ import { IActiveSourceDocument } from "./ISourceDocument";
 export class LanguageFeatures implements ILanguageFeatures {
     features = {
         autoCompletes: [
-            new Using(this.fileSystemInspector)
+            new Using(this.fileSystemInspector),
+            new CommandArgument()
         ]
     }
     constructor(private fileSystemInspector: IFileSystemInspector) {}

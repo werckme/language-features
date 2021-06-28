@@ -12,11 +12,20 @@ class CommandParameter implements ICommandParameter {
 }
 
 class Command implements ICommand {
-    constructor(private rawObject) {}
+    constructor(private rawObject) {
+    }
     public getName(): string { return (this.rawObject?.doc?.command || {})['@name']; }
     public getDescription(): string { return (this.rawObject?.doc?.command || {})['#']; }
-    public getParameter(): ICommandParameter[] { 
-        return (this.rawObject?.doc?.param || []).map(x => new CommandParameter(x)); 
+    public getParameter(): ICommandParameter[] {
+        let params = this.rawObject?.doc?.param;
+        if (!params) {
+            return [];
+        }
+        if (!Array.isArray(params)) {
+            // happens if only one object exists
+            params = [params];
+        }
+        return (params || []).map(x => new CommandParameter(x)); 
     }
 }
 
