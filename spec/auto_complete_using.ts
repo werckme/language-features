@@ -110,7 +110,7 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using "file.l');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(1);
-    expect(suggestions[0].text).to.equal("file.lua");
+    expect(suggestions[0].displayText).to.equal("file.lua");
   });
   it('return directories', async () => {
     const fs = new FileSystemInspectorMock({'/': [
@@ -132,7 +132,7 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using "/dir1/');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(1);
-    expect(suggestions[0].text).to.equal("file1.lua");
+    expect(suggestions[0].displayText).to.equal("file1.lua");
   });
   it('return resolved relative path', async () => {
     const fs = new FileSystemInspectorMock({ '/': [
@@ -172,7 +172,7 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using "./dir/file.l');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(1);
-    expect(suggestions[0].text).to.equal("file.lua");
+    expect(suggestions[0].displayText).to.equal("file.lua");
   });
   it('return resolved relative sub document root path', async () => {
     const fs = new FileSystemInspectorMock({ '/dir/': [
@@ -199,7 +199,7 @@ describe('should return files and directories', () => {
     const toTest = new LanguageFeatures(fs);
     const doc = new TestDocument('using "/');
     const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.map(x => x.text)).to.have.ordered.members([
+    expect(suggestions.map(x => x.displayText)).to.have.ordered.members([
       "@.chords", 
       "01.lua",
       "a.config",
@@ -219,7 +219,7 @@ describe('should return files and directories', () => {
     const toTest = new LanguageFeatures(fs);
     const doc = new TestDocument('using "/');
     const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.map(x => x.text)).to.have.ordered.members([
+    expect(suggestions.map(x => x.displayText)).to.have.ordered.members([
       "a",
       "z",
       "@.chords", 
@@ -237,8 +237,8 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using "/');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(2);
-    expect(suggestions[0].text).to.equal("a");
-    expect(suggestions[1].text).to.equal("01.lua");
+    expect(suggestions[0].displayText).to.equal("a");
+    expect(suggestions[1].displayText).to.equal("01.lua");
     expect((suggestions[0] as IPathSuggestion).file.isDirectory).to.equal(true);
     expect((suggestions[1] as IPathSuggestion).file.isDirectory).to.equal(false);
   });
@@ -268,7 +268,7 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using "/file');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(4);
-    expect(suggestions.map(x => x.text)).to.contains.all.members([
+    expect(suggestions.map(x => x.displayText)).to.contains.all.members([
       "file.template",
       "file.chords",
       "file.pitchmap",

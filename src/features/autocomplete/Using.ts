@@ -46,6 +46,7 @@ export class Using implements IAutoComplete {
                 return a.name.localeCompare(b.name);
             })
             .map(file => ({
+                displayText: file.name,
                 text: file.name,
                 file: file
             }));

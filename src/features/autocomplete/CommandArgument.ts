@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { ISuggestion } from "./ISuggestion";
 import { ICommand } from "../../documents/Command";
 import { CommandDb, parseCommandDbJson } from "../../parser/docParser";
+import { ICommandParameter } from "../../../out/documents/Command";
 
 const fs = require('fs');
 const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
@@ -29,10 +30,18 @@ export class CommandArgument implements IAutoComplete {
         if (!command) {
             return [];
         }
-        const parameters = command.getParameter();
-        return parameters.map(parameter => ({
-          text: parameter.getName(),
-          displayText: parameter.getName()
+        let parameters = command.getParameter();
+        if (!!typingArgName) {
+            console.log(typingArgName)
+            parameters = parameters.filter(parameter => parameter.getName().startsWith(typingArgName))
+        }
+        return parameters
+            .sort((a: ICommandParameter, b: ICommandParameter) => {
+                return a.getName().localeCompare(b.getName());
+            })
+            .map(parameter => ({
+          displayText: parameter.getName(),
+          text: `_${parameter.getName()}=`
         }));
     }
 }
