@@ -11,6 +11,10 @@ import { ICommandParameter } from "../../../out/documents/Command";
 const fs = require('fs');
 const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
 
+const LoadModInstructions = ["mod", "voicingStrategy"];
+const BuiltInMods = ["volume", "pan"]
+const Mods = [...BuiltInMods, ...LoadModInstructions];
+
 export class CommandArgument implements IAutoComplete {
     private autoHintDb: CommandDb;
     constructor() {
@@ -19,9 +23,10 @@ export class CommandArgument implements IAutoComplete {
 
     private getModName(line: string): string {
         line = line || "";
-        let match = line.match(/\s*(mod|modOnce|voicingStrategy)\s*:.*_use="?([a-zA-Z0-9]+)"?/)
+        const modsJoined = Mods.join('|');
+        let match = new RegExp(`\\s*(modOnce|${modsJoined})\\s*:.*_use="?([a-zA-Z0-9]+)"?`).exec(line);
         if(!match) {
-            match = line.match(/\s*(mod|modOnce|voicingStrategy)\s*:\s*([a-zA-Z0-9]+)/)
+            match = new RegExp(`\\s*(modOnce|${modsJoined})\\s*:\\s*([a-zA-Z0-9]+)`).exec(line);
         }
         if (!match || match.length < 2) {
             return "";
@@ -32,7 +37,13 @@ export class CommandArgument implements IAutoComplete {
 
     private getInstrumentConfModName(line: string): string {
         line = line || "";
-        const commandTail = (line.match(/.*(mod.*|voicingStrategy.*)/) || [])[1];
+        let modsJoined = Mods.join('|');
+        let buildInMod = (new RegExp(`.*(${modsJoined}).*`).exec(line) || [])[1];
+        if (buildInMod && BuiltInMods.includes(buildInMod)) {
+            return buildInMod;
+        }
+        modsJoined = Mods.map(x => `${x}.*`).join('|');
+        const commandTail = (new RegExp(`.*(${modsJoined})`).exec(line) || [])[1];
         if (!commandTail) {
             return;
         }
@@ -40,7 +51,8 @@ export class CommandArgument implements IAutoComplete {
         if(match && match.length > 1) {
             return match[1];            
         }
-        match = commandTail.match(/\s*(mod|voicingStrategy)\s*([a-zA-Z0-9]+)/);
+        modsJoined = Mods.join('|');
+        match = new RegExp(`\\s*(${modsJoined})\\s*([a-zA-Z0-9]+)`).exec(commandTail);
         if (!match || match.length < 2) {
             return "";
         }
