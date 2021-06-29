@@ -185,11 +185,11 @@ describe('should return command argument completion', () => {
     expect(hints.length).to.equal(1);
     expect(hints).to.contains("to");
   });
-  it('should handle multi lines', async () => {
-    const fs = new FileSystemInspectorMock();
-    const toTest = new LanguageFeatures(fs);
-    const doc = new TestDocument("instrumentDef: \n_");
-    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
-    expect(hints.length).to.equal(5);
-  });         
+  // it('should handle multi lines', async () => {
+  //   const fs = new FileSystemInspectorMock();
+  //   const toTest = new LanguageFeatures(fs);
+  //   const doc = new TestDocument("instrumentDef: \n_");
+  //   const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+  //   expect(hints.length).to.equal(5);
+  // });         
 });

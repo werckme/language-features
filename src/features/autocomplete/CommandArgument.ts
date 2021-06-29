@@ -1,12 +1,9 @@
-import { FileInfo, IFileSystemInspector } from "../../IFileSystemInspector";
-import { getFileExtension, SupportedUsingFileExtensions } from "../../Common";
 import { ISourceDocument } from "../../ISourceDocument";
 import { IAutoComplete } from "./IAutoComplete";
 import * as _ from 'lodash';
 import { ISuggestion } from "./ISuggestion";
-import { ICommand } from "../../documents/Command";
 import { CommandDb, parseCommandDbJson } from "../../parser/docParser";
-import { ICommandParameter } from "../../../out/documents/Command";
+import { ICommandParameter } from "../../../src/documents/Command";
 
 const fs = require('fs');
 const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
