@@ -9,6 +9,7 @@ import { IActiveSourceDocument,
 from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
+import { getRangeFromText } from './helper';
 const expect = chai.expect;
 
 class FileSystemInspectorMock implements IFileSystemInspector {
@@ -32,10 +33,8 @@ class TestDocument implements IActiveSourceDocument {
     return this.cursor;
   }
   async getRange(from: Cursor, to: Cursor): Promise<string> {
-    if (from.line > 0 || to.line >0) {
-      throw new Error("TODO");
-    }
-    return this.text.slice(from.col, to.col+1);
+    const line = getRangeFromText(from, to, this.text);
+    return line;
   }
   async getAbsolutePath(): Promise<string> {
     return this.documentPath;
