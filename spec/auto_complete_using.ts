@@ -38,7 +38,9 @@ class TestDocument implements IActiveSourceDocument {
   public documentPath = "/testDocument.sheet";
   constructor(private text: string, private cursor: Cursor = undefined) {
     if (cursor === undefined) {
-      this.cursor = {line: 0, col: text.length - 1};
+      const lines = text.split('\n');
+      const lastLine = _.last(lines);
+      this.cursor = {line: lines.length - 1, col: lastLine.length - 1};
     }
   }
   async getCursor(): Promise<Cursor> {
@@ -280,5 +282,19 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using ');
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(0);
-  });  
+  });
+  // it('return if using with multiple lines', async () => {
+  //   const fs = new FileSystemInspectorMock({ '/': [
+  //     file("file.lua"),
+  //     file("file.template"),
+  //     file("file.chords"),
+  //     file("file.pitchmap"),
+  //     file("file.config")
+  //   ]});
+  //   const toTest = new LanguageFeatures(fs);
+  //   const doc = new TestDocument(`using 
+  //   "/`);
+  //   const suggestions = await toTest.autoComplete(doc);
+  //   expect(suggestions.length).to.equal(5);
+  // });  
 });

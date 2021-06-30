@@ -4,12 +4,13 @@ import * as _ from 'lodash';
 import { ISuggestion } from "./ISuggestion";
 import { CommandDb, parseCommandDbJson } from "../../parser/docParser";
 import { ICommandParameter } from "../../../src/documents/Command";
+import { Keywords } from "../../Common";
 
 const fs = require('fs');
 const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
 
-const LoadModInstructions = ["mod", "voicingStrategy"];
-const BuiltInMods = ["volume", "pan"]
+const LoadModInstructions = [Keywords.mod, Keywords.voicingStrategy];
+const BuiltInMods = [Keywords.volume, Keywords.pan]
 const Mods = [...BuiltInMods, ...LoadModInstructions];
 
 export class CommandArgument implements IAutoComplete {
@@ -21,9 +22,9 @@ export class CommandArgument implements IAutoComplete {
     private getModName(line: string): string {
         line = line || "";
         const modsJoined = Mods.join('|');
-        let match = new RegExp(`\\s*(modOnce|${modsJoined})\\s*:.*_use="?([a-zA-Z0-9]+)"?`).exec(line);
+        let match = new RegExp(`\\s*(${Keywords.modOnce}|${modsJoined})\\s*:.*_use="?([a-zA-Z0-9]+)"?`).exec(line);
         if(!match) {
-            match = new RegExp(`\\s*(modOnce|${modsJoined})\\s*:\\s*([a-zA-Z0-9]+)`).exec(line);
+            match = new RegExp(`\\s*(${Keywords.modOnce}|${modsJoined})\\s*:\\s*([a-zA-Z0-9]+)`).exec(line);
         }
         if (!match || match.length < 2) {
             return "";
@@ -58,13 +59,13 @@ export class CommandArgument implements IAutoComplete {
     }
 
     private isMod(commandName: string): boolean {
-        return commandName === "mod"
-            || commandName === "modOnce"
-            || commandName === "voicingStrategy";
+        return commandName === Keywords.mod
+            || commandName === Keywords.modOnce
+            || commandName === Keywords.voicingStrategy;
     }
 
     private isInstrumentConf(commandName: string): boolean {
-        return commandName === "instrumentConf";
+        return commandName === Keywords.instrumentConf;
     }
 
     public async getSuggestions(line: string, document: ISourceDocument): Promise<ISuggestion[]> {

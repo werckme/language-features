@@ -1,5 +1,6 @@
 import { Cursor } from "../src";
 
+
 export function getRangeFromText(from: Cursor, to: Cursor, text: string): string {
     text = text || "";
     if (!text) {
@@ -23,6 +24,7 @@ export function getRangeFromText(from: Cursor, to: Cursor, text: string): string
                 throw new Error("invalid begin col range");
             }
             if (endCol < 0 || endCol >= line.length) {
+                console.log(endCol, line)
                 throw new Error("invalid end col range");
             }
             line = line.substring(beginCol, endCol+1);      
