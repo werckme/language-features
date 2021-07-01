@@ -9,7 +9,7 @@ import { IActiveSourceDocument,
 from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
-import { getRangeFromText } from './helper';
+import { getRangeFromText, TestDocument } from './helper';
 const expect = chai.expect;
 
 
@@ -31,27 +31,6 @@ class FileSystemInspectorMock implements IFileSystemInspector {
   }
   async ls(path: Path): Promise<FileInfo[]> {
     return this.fs[path] || [];
-  }
-}
-
-class TestDocument implements IActiveSourceDocument {
-  public documentPath = "/testDocument.sheet";
-  constructor(private text: string, private cursor: Cursor = undefined) {
-    if (cursor === undefined) {
-      const lines = text.split('\n');
-      const lastLine = _.last(lines);
-      this.cursor = {line: lines.length - 1, col: lastLine.length - 1};
-    }
-  }
-  async getCursor(): Promise<Cursor> {
-    return this.cursor;
-  }
-  async getRange(from: Cursor, to: Cursor): Promise<string> {
-    const line = getRangeFromText(from, to, this.text);
-    return line;
-  }
-  async getAbsolutePath(): Promise<string> {
-    return this.documentPath;
   }
 }
 
@@ -283,18 +262,18 @@ describe('should return files and directories', () => {
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(0);
   });
-  // it('return if using with multiple lines', async () => {
-  //   const fs = new FileSystemInspectorMock({ '/': [
-  //     file("file.lua"),
-  //     file("file.template"),
-  //     file("file.chords"),
-  //     file("file.pitchmap"),
-  //     file("file.config")
-  //   ]});
-  //   const toTest = new LanguageFeatures(fs);
-  //   const doc = new TestDocument(`using 
-  //   "/`);
-  //   const suggestions = await toTest.autoComplete(doc);
-  //   expect(suggestions.length).to.equal(5);
-  // });  
+  it('return if using with multiple lines', async () => {
+    const fs = new FileSystemInspectorMock({ '/': [
+      file("file.lua"),
+      file("file.template"),
+      file("file.chords"),
+      file("file.pitchmap"),
+      file("file.config")
+    ]});
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument(`using 
+    "/`);
+    const suggestions = await toTest.autoComplete(doc);
+    expect(suggestions.length).to.equal(5);
+  });  
 });

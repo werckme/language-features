@@ -9,7 +9,7 @@ import { IActiveSourceDocument,
 from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
-import { getRangeFromText } from './helper';
+import { getRangeFromText, TestDocument } from './helper';
 const expect = chai.expect;
 
 class FileSystemInspectorMock implements IFileSystemInspector {
@@ -19,27 +19,6 @@ class FileSystemInspectorMock implements IFileSystemInspector {
   }
   async ls(path: Path): Promise<FileInfo[]> {
     return [];
-  }
-}
-
-class TestDocument implements IActiveSourceDocument {
-  public documentPath = "/testDocument.sheet";
-  constructor(private text: string, private cursor: Cursor = undefined) {
-    if (cursor === undefined) {
-      const lines = text.split('\n');
-      const lastLine = _.last(lines);
-      this.cursor = {line: lines.length - 1, col: lastLine.length - 1};
-    }
-  }
-  async getCursor(): Promise<Cursor> {
-    return this.cursor;
-  }
-  async getRange(from: Cursor, to: Cursor): Promise<string> {
-    const line = getRangeFromText(from, to, this.text);
-    return line;
-  }
-  async getAbsolutePath(): Promise<string> {
-    return this.documentPath;
   }
 }
 
@@ -186,12 +165,15 @@ describe('should return command argument completion', () => {
     expect(hints.length).to.equal(1);
     expect(hints).to.contains("to");
   });
-  // it('should handle multi lines', async () => {
-  //   const fs = new FileSystemInspectorMock();
-  //   const toTest = new LanguageFeatures(fs);
-  //   const doc = new TestDocument(`instrumentDef: 
-  //   _`);
-  //   const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
-  //   expect(hints.length).to.equal(5);
-  // });         
+  it('should handle multi lines', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument(`instrumentConf: bass
+    volume 100
+    mod swing _`);
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(2);
+    expect(hints).to.contains("grid");
+    expect(hints).to.contains("offset");
+  });         
 });

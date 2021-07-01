@@ -1,3 +1,4 @@
+import { getExpressionLine } from "./Common";
 import { CommandArgument } from "./features/autocomplete/CommandArgument";
 import { ISuggestion } from "./features/autocomplete/ISuggestion";
 import { Using } from "./features/autocomplete/Using";
@@ -16,7 +17,7 @@ export class LanguageFeatures implements ILanguageFeatures {
 
     public async autoComplete(document: IActiveSourceDocument): Promise<ISuggestion[]> {
         const cursor = await document.getCursor();
-        const line = ((await document.getRange({line: cursor.line, col: 0}, cursor)) || "").trim();
+        const line = await getExpressionLine(document, cursor);
         if (!line) {
             return [];
         }

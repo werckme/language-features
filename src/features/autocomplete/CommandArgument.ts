@@ -9,7 +9,7 @@ import { Keywords } from "../../Common";
 const fs = require('fs');
 const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
 
-const LoadModInstructions = [Keywords.mod, Keywords.voicingStrategy];
+const LoadModInstructions = [Keywords.mod, Keywords.voicingStrategy, Keywords.do, Keywords.doOnce];
 const BuiltInMods = [Keywords.volume, Keywords.pan]
 const Mods = [...BuiltInMods, ...LoadModInstructions];
 
