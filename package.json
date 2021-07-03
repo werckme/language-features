@@ -11,7 +11,7 @@
     "build": "parcel build --no-source-maps src/LanguageFeatures.ts -o index.js",
     "buildDev": "parcel build --no-minify src/LanguageFeatures.ts -o index.js",
     "buildTests": "parcel build --no-source-maps spec/*.ts --out-dir spec/dist",
-    "buildAutoHintDb": "tsc scripts/buildWerckmeisterAutoHintDb.ts && node scripts/buildWerckmeisterAutoHintDb.js"
+    "buildAutoHintDb": "mkdir -p data && tsc scripts/buildWerckmeisterAutoHintDb.ts && node scripts/buildWerckmeisterAutoHintDb.js"
   },
   "repository": {
     "type": "git",

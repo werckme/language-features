@@ -23,4 +23,3 @@ var options = {
 inDirs.forEach(function (dir) { return dree.scan(dir, options, onFile); });
 var json = JSON.stringify(docParser.commandDb);
 fs.writeFileSync(outFile, json);
-console.log(docParser.commandDb['voicelead'].getParameter());
