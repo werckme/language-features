@@ -127,7 +127,8 @@ export class CommandArgument implements IAutoComplete {
             .map(value => ({
           displayText: value,
           text: `"${value}"`,
-          command: command
+          command: command,
+          parameter: parameter
         }));
     }
 
