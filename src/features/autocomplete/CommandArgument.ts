@@ -99,7 +99,7 @@ export class CommandArgument implements IAutoComplete {
         }));
         if (!!typingValue) {
             instruments = instruments.filter(instrument => instrument.displayText.
-                toLowerCase().startsWith(typingValue.toLowerCase()))
+                toLowerCase().indexOf(typingValue.toLowerCase()) >= 0)
         }
         return instruments;
     }
