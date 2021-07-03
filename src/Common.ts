@@ -65,7 +65,6 @@ export async function getExpressionLine(document: ISourceDocument, cursor: Curso
     for(let lineNr = cursor.line; lineNr >= 0; --lineNr) {
         const fromCursor = {line: lineNr, col: 0};
         let line = await document.getRange(fromCursor, cursor);
-        //console.log(`${fromCursor.line}:${fromCursor.col}->${cursor.line}:${cursor.col}`, line)
         const match = IsExpression.exec(line);
         if (match) {
             const str = match[1];

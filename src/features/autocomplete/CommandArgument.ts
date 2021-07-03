@@ -3,8 +3,9 @@ import { IAutoComplete } from "./IAutoComplete";
 import * as _ from 'lodash';
 import { ISuggestion } from "./ISuggestion";
 import { CommandDb, parseCommandDbJson } from "../../parser/docParser";
-import { ICommandParameter } from "../../../src/documents/Command";
+import { ICommand, ICommandParameter } from "../../../src/documents/Command";
 import { Keywords } from "../../Common";
+import { ICommandSuggestion } from "./ICommandSuggestion";
 
 const fs = require('fs');
 const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
@@ -68,26 +69,7 @@ export class CommandArgument implements IAutoComplete {
         return commandName === Keywords.instrumentConf;
     }
 
-    public async getSuggestions(line: string, document: ISourceDocument): Promise<ISuggestion[]> {
-        if (!line) {
-            return [];
-        }
-        const match = line.match(/.*?(\w+)\s*:.*?_(\w*)$/);
-        if (!match) {
-            return [];
-        }
-        let commandName = (match[1] || "").trim();
-        const typingArgName = (match[2] || "").trim();
-        if (this.isMod(commandName)) {
-            commandName = this.getModName(line);
-        }
-        if (this.isInstrumentConf(commandName)) {
-            commandName = this.getInstrumentConfModName(line);
-        }
-        const command = this.autoHintDb[commandName];
-        if (!command) {
-            return [];
-        }
+    private getParameterSuggestion(command: ICommand, typingArgName: string): ICommandSuggestion[] {
         let parameters = command.getParameter();
         if (!!typingArgName) {
             parameters = parameters.filter(parameter => parameter.getName().startsWith(typingArgName))
@@ -98,7 +80,64 @@ export class CommandArgument implements IAutoComplete {
             })
             .map(parameter => ({
           displayText: parameter.getName(),
-          text: `_${parameter.getName()}=`
+          text: `_${parameter.getName()}=`,
+          command: command
         }));
+    }
+
+    private getValueSuggestion(command: ICommand, parameterName: string, typingValue: string): ICommandSuggestion[] {
+        let parameter = command.getParameter()
+            .filter(param => param.getName() === parameterName)[0];
+        
+        if (!parameter) {
+            return [];
+        }
+        const typeString = (parameter.getType() || "");
+        const valueListMatch = typeString.match(/\[(.*)\]/);
+        if (!valueListMatch || !valueListMatch[1]) {
+            return [];
+        }
+        let values = valueListMatch[1].split(',').map(x => x.trim());
+        if (!!typingValue) {
+            values = values.filter(value => value.startsWith(typingValue))
+        }
+        return values
+            .sort((a: string, b: string) => {
+                return a.localeCompare(b);
+            })
+            .map(value => ({
+          displayText: value,
+          text: `"${value}"`,
+          command: command
+        }));
+    }
+
+    public async getSuggestions(line: string, document: ISourceDocument): Promise<ICommandSuggestion[]> {
+        if (!line) {
+            return [];
+        }
+        const match = line.match(/.*?(\w+)\s*:.*?_(\w*)(="?(\w*))?$/);
+        if (!match) {
+            return [];
+        }
+        let commandName = (match[1] || "").trim();
+        const isTypingArgumentValue = match[3] !== undefined;
+        const typingText = (match[2] || "").trim();
+        if (this.isMod(commandName)) {
+            commandName = this.getModName(line);
+        }
+        if (this.isInstrumentConf(commandName)) {
+            commandName = this.getInstrumentConfModName(line);
+        }
+        const command = this.autoHintDb[commandName];
+        if (!command) {
+            return [];
+        }
+        if (isTypingArgumentValue) {
+            const parameterName = (match[2] || "").trim();
+            const typingValue = (match[4] || "").trim();
+            return this.getValueSuggestion(command, parameterName, typingValue);
+        }
+        return this.getParameterSuggestion(command, typingText);
     }
 }

@@ -175,5 +175,35 @@ describe('should return command argument completion', () => {
     expect(hints.length).to.equal(2);
     expect(hints).to.contains("grid");
     expect(hints).to.contains("offset");
-  });         
+  });
+  it('should handle command parameter values', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("voicingStrategy: voicelead _range=");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(7);
+    expect(hints).to.contains("contrabass");
+    expect(hints).to.contains("bass");
+    expect(hints).to.contains("baritone");
+    expect(hints).to.contains("tenor");
+    expect(hints).to.contains("alto");
+    expect(hints).to.contains("mezzosoprano");
+    expect(hints).to.contains("soprano");
+  });
+  it('should handle command parameter values filtered', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("voicingStrategy: voicelead _range=ba");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(2);
+    expect(hints).to.contains("bass");
+    expect(hints).to.contains("baritone");
+  });
+  it('should handle command with no parameter values', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("volume: _to=");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(0);
+  });            
 });
