@@ -6,6 +6,7 @@ import { CommandDb, parseCommandDbJson } from "../../parser/docParser";
 import { ICommand, ICommandParameter } from "../../../src/documents/Command";
 import { Keywords } from "../../Common";
 import { ICommandSuggestion } from "./ICommandSuggestion";
+import { GMInstruments } from "./GMInstruments";
 
 const fs = require('fs');
 const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
@@ -85,7 +86,28 @@ export class CommandArgument implements IAutoComplete {
         }));
     }
 
+    /**
+     * 
+     * @param command returns GM instrument names
+     * @returns 
+     */
+    private getInstrumentDefPcSuggestions(command: ICommand, typingValue: string): ICommandSuggestion[] {
+        let instruments = GMInstruments.map((name, index) => ({
+            displayText: `${name} (${index})`,
+            text: index.toString(),
+            command: command
+        }));
+        if (!!typingValue) {
+            instruments = instruments.filter(instrument => instrument.displayText.
+                toLowerCase().startsWith(typingValue.toLowerCase()))
+        }
+        return instruments;
+    }
+
     private getValueSuggestion(command: ICommand, parameterName: string, typingValue: string): ICommandSuggestion[] {
+        if (command.getName() === Keywords.instrumentDef && parameterName == 'pc') {
+            return this.getInstrumentDefPcSuggestions(command, typingValue);
+        }
         let parameter = command.getParameter()
             .filter(param => param.getName() === parameterName)[0];
         
@@ -102,9 +124,6 @@ export class CommandArgument implements IAutoComplete {
             values = values.filter(value => value.startsWith(typingValue))
         }
         return values
-            .sort((a: string, b: string) => {
-                return a.localeCompare(b);
-            })
             .map(value => ({
           displayText: value,
           text: `"${value}"`,

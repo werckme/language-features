@@ -205,5 +205,34 @@ describe('should return command argument completion', () => {
     const doc = new TestDocument("volume: _to=");
     const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
     expect(hints.length).to.equal(0);
-  });            
+  });
+  it('should handle instrumentDef parameter _pc values', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("instrumentDef: myInstrument _cc=0 _pc=");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(128);
+  });
+  it('should handle instrumentDef parameter _pc values filtered', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("instrumentDef: myInstrument _cc=0 _pc=aco");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(4);
+    expect(hints).to.contains("Acoustic Grand Piano (0)");
+    expect(hints).to.contains("Acoustic Guitar Nylon (24)");
+    expect(hints).to.contains("Acoustic Guitar Steel (25)");
+    expect(hints).to.contains("Acoustic Bass (32)");
+  });
+  it('should handle instrumentDef parameter _pc quoted values filtered', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("instrumentDef: myInstrument _cc=0 _pc=\"aco");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(4);
+    expect(hints).to.contains("Acoustic Grand Piano (0)");
+    expect(hints).to.contains("Acoustic Guitar Nylon (24)");
+    expect(hints).to.contains("Acoustic Guitar Steel (25)");
+    expect(hints).to.contains("Acoustic Bass (32)");    
+  });                  
 });
