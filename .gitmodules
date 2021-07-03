@@ -1,0 +1,3 @@
+[submodule "ext/werckmeister"]
+	path = ext/werckmeister
+	url = https://github.com/werckme/werckmeister.git
