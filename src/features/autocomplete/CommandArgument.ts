@@ -91,11 +91,12 @@ export class CommandArgument implements IAutoComplete {
      * @param command returns GM instrument names
      * @returns 
      */
-    private getInstrumentDefPcSuggestions(command: ICommand, typingValue: string): ICommandSuggestion[] {
+    private getInstrumentDefPcSuggestions(command: ICommand, parameter: ICommandParameter, typingValue: string): ICommandSuggestion[] {
         let instruments = GMInstruments.map((name, index) => ({
             displayText: `${name} (${index})`,
             text: index.toString(),
-            command: command
+            command: command,
+            parameter: parameter
         }));
         if (!!typingValue) {
             instruments = instruments.filter(instrument => instrument.displayText.
@@ -105,14 +106,13 @@ export class CommandArgument implements IAutoComplete {
     }
 
     private getValueSuggestion(command: ICommand, parameterName: string, typingValue: string): ICommandSuggestion[] {
-        if (command.getName() === Keywords.instrumentDef && parameterName == 'pc') {
-            return this.getInstrumentDefPcSuggestions(command, typingValue);
-        }
         let parameter = command.getParameter()
             .filter(param => param.getName() === parameterName)[0];
-        
         if (!parameter) {
             return [];
+        }
+        if (command.getName() === Keywords.instrumentDef && parameterName == 'pc') {
+            return this.getInstrumentDefPcSuggestions(command, parameter, typingValue);
         }
         const typeString = (parameter.getType() || "");
         const valueListMatch = typeString.match(/\[(.*)\]/);
