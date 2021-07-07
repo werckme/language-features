@@ -46,7 +46,7 @@ describe('should return command argument completion', () => {
     const toTest = new LanguageFeatures(fs);
     const doc = new TestDocument("volume: _");
     expect((await toTest.autoComplete(doc)).length).to.equal(1);
-    expect((await toTest.autoComplete(doc))[0].text).to.equal("_to=");
+    expect((await toTest.autoComplete(doc))[0].text).to.equal("_to");
   });
   it('should return filtered suggestion text', async () => {
     const fs = new FileSystemInspectorMock();
