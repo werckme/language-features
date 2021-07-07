@@ -81,7 +81,7 @@ export class CommandArgument implements IAutoComplete {
             })
             .map(parameter => ({
           displayText: parameter.getName(),
-          text: `_${parameter.getName()}=`,
+          text: `_${parameter.getName()}`,
           command: command
         }));
     }
