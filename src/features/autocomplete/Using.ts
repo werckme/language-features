@@ -26,8 +26,7 @@ export class Using implements IAutoComplete {
         if (!!filename) {
             searchPath = await this.fileInspector.getParentPath(typingPath);
         }
-        searchPath = searchPath.replace('../', await this.fileInspector.getParentPath(documentPath));
-        searchPath = searchPath.replace('./', documentPath);
+        searchPath = await this.fileInspector.resolve(documentPath, searchPath);
         const files = await this.fileInspector.ls(searchPath);
         let result = files
             .filter(file => file.isDirectory 

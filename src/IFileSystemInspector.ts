@@ -6,4 +6,5 @@ export type FileInfo = {
 export interface IFileSystemInspector {
     ls(path: Path): Promise<FileInfo[]>;
     getParentPath(path): Promise<Path>;
+    resolve(basePath: Path, path: Path): Promise<Path>;
 }

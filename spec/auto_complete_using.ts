@@ -10,6 +10,8 @@ from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
 import { getRangeFromText, TestDocument } from './helper';
+import * as pathModule from 'path';
+
 const expect = chai.expect;
 
 
@@ -23,13 +25,19 @@ function dir(name: string): FileInfo {
 
 class FileSystemInspectorMock implements IFileSystemInspector {
   constructor(private fs: {[dir: string]: FileInfo[]}) {}
-  async getParentPath(path: string): Promise<string> {
+  
+  public async resolve(basePath: string, path: string): Promise<string> {
+    const result = pathModule.resolve(basePath, path);
+    return result;
+  }
+  
+  public async getParentPath(path: string): Promise<string> {
     path = path.trim().replace(/\/$/, '');
     const segments = path.split('/');
     const result = segments.slice(0, segments.length - 1).join('/') + '/';
     return result;
   }
-  async ls(path: Path): Promise<FileInfo[]> {
+  public async ls(path: Path): Promise<FileInfo[]> {
     return this.fs[path] || [];
   }
 }
@@ -102,10 +110,10 @@ describe('should return files and directories', () => {
     expect(suggestions.length).to.equal(1);
   });
   it('return content of sub directories', async () => {
-    const fs = new FileSystemInspectorMock({'/dir1/': [
+    const fs = new FileSystemInspectorMock({'/dir1': [
       file("file1.lua"),
     ], 
-    '/dir2/': [
+    '/dir2': [
       file("file2.lua"),
     ]});
     const toTest = new LanguageFeatures(fs);
@@ -128,7 +136,7 @@ describe('should return files and directories', () => {
     expect(suggestions.length).to.equal(5);
   });  
   it('return resolved relative sub path', async () => {
-    const fs = new FileSystemInspectorMock({ '/dir/': [
+    const fs = new FileSystemInspectorMock({ '/dir': [
       file("file.lua"),
       file("file.template"),
       file("file.chords"),
@@ -141,7 +149,7 @@ describe('should return files and directories', () => {
     expect(suggestions.length).to.equal(5);
   });
   it('return resolved relative sub path filterd file', async () => {
-    const fs = new FileSystemInspectorMock({ '/dir/': [
+    const fs = new FileSystemInspectorMock({ '/dir': [
       file("file.lua"),
       file("file.template"),
       file("file.chords"),
@@ -155,7 +163,7 @@ describe('should return files and directories', () => {
     expect(suggestions[0].displayText).to.equal("file.lua");
   });
   it('return resolved relative sub document root path', async () => {
-    const fs = new FileSystemInspectorMock({ '/dir/': [
+    const fs = new FileSystemInspectorMock({ '/dir': [
       file("file.lua"),
       file("file.template"),
       file("file.chords"),
@@ -236,6 +244,20 @@ describe('should return files and directories', () => {
     const suggestions = await toTest.autoComplete(doc);
     expect(suggestions.length).to.equal(5);
   });
+  it('return resolved relative parent of parent path', async () => {
+    const fs = new FileSystemInspectorMock({ '/': [
+      file("file.lua"),
+      file("file.template"),
+      file("file.chords"),
+      file("file.pitchmap"),
+      file("file.config")
+    ]});
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument('using "../../');
+    doc.documentPath = "/sub/sub/testDoc.sheet";
+    const suggestions = await toTest.autoComplete(doc);
+    expect(suggestions.length).to.equal(5);
+  });  
   it('return filter from beginning', async () => {
     const fs = new FileSystemInspectorMock({ '/': [
       file("file.template"),

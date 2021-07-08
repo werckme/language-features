@@ -14,6 +14,9 @@ const expect = chai.expect;
 
 class FileSystemInspectorMock implements IFileSystemInspector {
   constructor() {}
+  resolve(basePath: string, path: string): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
   async getParentPath(path: string): Promise<string> {
     return "";
   }
