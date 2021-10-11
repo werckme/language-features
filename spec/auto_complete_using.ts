@@ -57,12 +57,13 @@ describe('should return files and directories', () => {
       file("file.template"),
       file("file.chords"),
       file("file.pitchmap"),
-      file("file.config")
+      file("file.config"),
+      file("file.conductions")
     ]});
     const toTest = new LanguageFeatures(fs);
     const doc = new TestDocument('using "/');
     const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(5);
+    expect(suggestions.length).to.equal(6);
   });
   it('do not return unsupported file for using', async () => {
     const fs = new FileSystemInspectorMock({ '/': [

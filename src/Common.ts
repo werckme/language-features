@@ -6,7 +6,8 @@ export const SupportedUsingFileExtensions = [
     '.template',
     '.chords',
     '.pitchmap',
-    '.config'
+    '.config',
+    '.conductions'
 ];
 
 export const MetaCommands = {
