@@ -9,6 +9,8 @@ class CommandParameter implements ICommandParameter {
     public getIsOptional(): boolean { return (this.rawObject || {})['@optional'] === '1'; }
     public getType(): string { return (this.rawObject || {})['@type']; }
     public getDescription(): string { return (this.rawObject || {})['#']; }
+    public getIsDeprecated(): boolean { return (this.rawObject || {})['@deprecated'].length > 0; }
+    public getDeprecatedText(): string { return (this.rawObject || {})['@deprecated']; }
 }
 
 class Command implements ICommand {

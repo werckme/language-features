@@ -82,6 +82,7 @@ export class CommandArgument implements IAutoComplete {
             .map(parameter => ({
           displayText: parameter.getName(),
           text: `_${parameter.getName()}`,
+          deprecated: parameter.getDeprecatedText(),
           command: command
         }));
     }
@@ -128,7 +129,7 @@ export class CommandArgument implements IAutoComplete {
           displayText: value,
           text: `"${value}"`,
           command: command,
-          parameter: parameter
+          parameter: parameter,
         }));
     }
 

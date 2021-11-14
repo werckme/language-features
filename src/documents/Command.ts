@@ -3,6 +3,8 @@ export interface ICommandParameter {
     getIsOptional(): boolean;
     getType(): string;
     getDescription(): string;
+    getIsDeprecated(): boolean;
+    getDeprecatedText(): string;
 }
 
 export interface ICommand {

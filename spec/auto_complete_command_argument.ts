@@ -66,6 +66,8 @@ describe('should return command argument completion', () => {
     const doc = new TestDocument("instrumentDef: _");
     const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
     expect(hints).to.have.ordered.members([
+      "bankLsb",
+      "bankMsb",
       "cc",
       "ch",
       "onDevice",
@@ -239,5 +241,14 @@ describe('should return command argument completion', () => {
     expect(hints).to.contains("Acoustic Guitar Steel (25)");
     expect(hints).to.contains("Acoustic Bass (32)");
     expect(hints).to.contains("Bright Acoustic Piano (1)");
-  });                  
+  });
+  it('cc should be deprecated', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("instrumentDef: _");
+    const hints = await toTest.autoComplete(doc);
+    const cc = hints.find(x => x.displayText === "cc");
+    expect(cc.deprecated.length).greaterThan(0);
+    console.log(cc.deprecated)
+  });             
 });

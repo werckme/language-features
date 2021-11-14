@@ -10,6 +10,8 @@ var CommandParameter = /** @class */ (function () {
     CommandParameter.prototype.getIsOptional = function () { return (this.rawObject || {})['@optional'] === '1'; };
     CommandParameter.prototype.getType = function () { return (this.rawObject || {})['@type']; };
     CommandParameter.prototype.getDescription = function () { return (this.rawObject || {})['#']; };
+    CommandParameter.prototype.getIsDeprecated = function () { return (this.rawObject || {})['@deprecated'].length > 0; };
+    CommandParameter.prototype.getDeprecatedText = function () { return (this.rawObject || {})['@deprecated']; };
     return CommandParameter;
 }());
 var Command = /** @class */ (function () {
