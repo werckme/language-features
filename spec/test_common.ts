@@ -33,7 +33,7 @@ volume 100`)
     const line = await getExpressionLine(document, await document.getCursor());
     expect(line).to.equal(`instrumentConf: bass mod staccato _grid=16 volume 100`);
   });
-  it('return two expressions in one line', async () => {
+  it('return one expressions in one line with two expressions', async () => {
     const document = new TestDocument(`instrumentConf: bass mod staccato; instrumentConf: piano volume 10`)
     const line = await getExpressionLine(document, await document.getCursor());
     expect(line).to.equal(`instrumentConf: piano volume 10`);

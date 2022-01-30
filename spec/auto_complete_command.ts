@@ -10,6 +10,7 @@ from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
 import { getRangeFromText, TestDocument } from './helper';
+import { AutoCompleteCommandMark } from './large_documents';
 const expect = chai.expect;
 
 class FileSystemInspectorMock implements IFileSystemInspector {
@@ -55,4 +56,10 @@ describe('should command suggestions', () => {
     expect((await toTest.autoComplete(doc)).length).to.equal(1);
     expect((await toTest.autoComplete(doc))[0].description).to.be.a("string");
   });
+  it('should handle large documents', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument(AutoCompleteCommandMark);
+    expect((await toTest.autoComplete(doc)).length).to.equal(1);
+  }).timeout(1000);  
 });

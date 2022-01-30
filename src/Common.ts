@@ -65,6 +65,10 @@ export async function getExpressionLine(document: ISourceDocument, cursor: Curso
             const str = match[1];
             return str.replace(/\n/g, ' ');
         }
+        const canCancelSearch = _.findIndex(line, x => x === ']' ||  x === '}' || x === ';' ) >= 0;
+        if (canCancelSearch) {
+            break;
+        }
     }
     // check if we are at the beginning of an expression
     let line = await document.getRange({line: cursor.line, col: 0}, cursor);
