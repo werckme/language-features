@@ -32,9 +32,9 @@ class Command implements ICommand {
     }
     public getName(): string { return (this.rawObject?.doc?.command || {})['@name']; }
     public getDescription(): string { 
-        const result = (this.rawObject?.doc?.command || {})['#']; 
+        let result = (this.rawObject?.doc?.command || {})['#']; 
         if (result && result.join) {
-            return (result as Array<string>).join('\n');
+            result = (result as Array<string>).join('\n');
         }
         return result;
     }
@@ -80,7 +80,14 @@ export class DocParser {
         return resLines.join('\n');
     }
 
+    private normalizeText(text: string) {
+        return text
+            .replace(/manual\/#/g, 'https://werckme.github.io/manual#')
+            .replace(/\\n/g, '');
+    }
+
     private parseDocumentText(text: string) {
+        text = this.normalizeText(text);
         const xml = fromXML(`<doc>${text}</doc>`);
         const command = new Command(xml);
         const commandName = command.getName();
@@ -91,6 +98,7 @@ export class DocParser {
     }
 
     public parseLua(text: string) {
+        text = this.normalizeText(text);
         const docText = this.getDocComment(text, '--');
         if (!docText) {
             return;
@@ -98,6 +106,7 @@ export class DocParser {
         this.parseDocumentText(docText);
     }
     public parseHpp(text: string) {
+        text = this.normalizeText(text);
         const docText = this.getDocComment(text, '///');
         if (!docText) {
             return;

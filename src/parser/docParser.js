@@ -9,7 +9,13 @@ var CommandParameter = /** @class */ (function () {
     CommandParameter.prototype.getName = function () { return (this.rawObject || {})['@name']; };
     CommandParameter.prototype.getIsOptional = function () { return (this.rawObject || {})['@optional'] === '1'; };
     CommandParameter.prototype.getType = function () { return (this.rawObject || {})['@type']; };
-    CommandParameter.prototype.getDescription = function () { return (this.rawObject || {})['#']; };
+    CommandParameter.prototype.getDescription = function () {
+        var result = (this.rawObject || {})['#'];
+        if (result && result.join) {
+            return result.join('\n');
+        }
+        return result;
+    };
     CommandParameter.prototype.getIsDeprecated = function () { return (this.rawObject || {})['@deprecated'].length > 0; };
     CommandParameter.prototype.getDeprecatedText = function () { return (this.rawObject || {})['@deprecated']; };
     return CommandParameter;
@@ -28,7 +34,14 @@ var Command = /** @class */ (function () {
             .map(function (x) { return x.trim(); });
     };
     Command.prototype.getName = function () { var _a, _b; return (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['@name']; };
-    Command.prototype.getDescription = function () { var _a, _b; return (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['#']; };
+    Command.prototype.getDescription = function () {
+        var _a, _b;
+        var result = (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['#'];
+        if (result && result.join) {
+            result = result.join('\n');
+        }
+        return result;
+    };
     Command.prototype.getParameter = function () {
         var _a, _b;
         var params = (_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.param;
@@ -74,7 +87,13 @@ var DocParser = /** @class */ (function () {
         }
         return resLines.join('\n');
     };
+    DocParser.prototype.normalizeText = function (text) {
+        return text
+            .replace(/manual\/#/g, 'https://werckme.github.io/manual#')
+            .replace(/\\n/g, '');
+    };
     DocParser.prototype.parseDocumentText = function (text) {
+        text = this.normalizeText(text);
         var xml = from_xml_1.fromXML("<doc>" + text + "</doc>");
         var command = new Command(xml);
         var commandName = command.getName();
@@ -84,6 +103,7 @@ var DocParser = /** @class */ (function () {
         this.commandDb[commandName] = command;
     };
     DocParser.prototype.parseLua = function (text) {
+        text = this.normalizeText(text);
         var docText = this.getDocComment(text, '--');
         if (!docText) {
             return;
@@ -91,6 +111,7 @@ var DocParser = /** @class */ (function () {
         this.parseDocumentText(docText);
     };
     DocParser.prototype.parseHpp = function (text) {
+        text = this.normalizeText(text);
         var docText = this.getDocComment(text, '///');
         if (!docText) {
             return;
