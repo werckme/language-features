@@ -58,4 +58,9 @@ _b=200/
     const line = await getExpressionLine(document, await document.getCursor());
     expect(line).to.equal(`signature: 2 3`);
   });
+  it('return documentConfig', async () => {
+    const document = new TestDocument(`instrument`)
+    const line = await getExpressionLine(document, await document.getCursor());
+    expect(line).to.equal(`instrument`);
+  });  
 });

@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
 import { getRangeFromText, TestDocument } from './helper';
 import * as pathModule from 'path';
+import { exit } from 'process';
 
 const expect = chai.expect;
 

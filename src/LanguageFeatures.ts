@@ -1,5 +1,6 @@
 import { getExpressionLine } from "./Common";
 import { CommandArgument } from "./features/autocomplete/CommandArgument";
+import { Command } from "./features/autocomplete/Command";
 import { ISuggestion } from "./features/autocomplete/ISuggestion";
 import { Using } from "./features/autocomplete/Using";
 import { FileInfo, IFileSystemInspector } from "./IFileSystemInspector";
@@ -10,6 +11,7 @@ export class LanguageFeatures implements ILanguageFeatures {
     features = {
         autoCompletes: [
             new Using(this.fileSystemInspector),
+            new Command(),
             new CommandArgument()
         ]
     }

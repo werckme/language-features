@@ -1,15 +1,12 @@
 import { ISourceDocument } from "../../ISourceDocument";
 import { IAutoComplete } from "./IAutoComplete";
 import * as _ from 'lodash';
-import { ISuggestion } from "./ISuggestion";
 import { CommandDb, parseCommandDbJson } from "../../parser/docParser";
 import { ICommand, ICommandParameter } from "../../../src/documents/Command";
 import { Keywords } from "../../Common";
 import { ICommandSuggestion } from "./ICommandSuggestion";
 import { GMInstruments } from "./GMInstruments";
-
-const fs = require('fs');
-const autoHintDbJson = fs.readFileSync('./data/werckmeisterAutoHintDb.json', 'utf8');
+import { getAutoHintDb } from "./WerckmeisterAutoHintDb";
 
 const LoadModInstructions = [Keywords.mod, Keywords.voicingStrategy, Keywords.do, Keywords.doOnce];
 const BuiltInMods = [Keywords.volume, Keywords.pan]
@@ -18,7 +15,7 @@ const Mods = [...BuiltInMods, ...LoadModInstructions];
 export class CommandArgument implements IAutoComplete {
     private autoHintDb: CommandDb;
     constructor() {
-        this.autoHintDb = parseCommandDbJson(autoHintDbJson);
+        this.autoHintDb = getAutoHintDb();
     }
 
     private getModName(line: string): string {

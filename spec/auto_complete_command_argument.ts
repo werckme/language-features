@@ -249,6 +249,5 @@ describe('should return command argument completion', () => {
     const hints = await toTest.autoComplete(doc);
     const cc = hints.find(x => x.displayText === "cc");
     expect(cc.deprecated.length).greaterThan(0);
-    console.log(cc.deprecated)
   });             
 });
