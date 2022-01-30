@@ -11,10 +11,10 @@ export class Command implements IAutoComplete {
         this.commandDb = getAutoHintDb();
     }
     
-    public async getSuggestions(line: string, document: ISourceDocument): Promise<ISuggestion[]> {
+    public async getSuggestions(line: string, document: ISourceDocument, documentContext: string): Promise<ISuggestion[]> {
         const searchTerm = line.toLowerCase();
         const matches =_(this.commandDb)
-            .filter((v, k) => k.toLowerCase().indexOf(searchTerm) >= 0)
+            .filter((v, k) => k.toLowerCase().indexOf(searchTerm) >= 0 && v.getDocumentContext().includes(documentContext))
             .value();
         return matches.map(x => ({
             displayText: x.getName(),

@@ -7,7 +7,7 @@ import { IPathSuggestion } from "./IPathSuggestion";
 
 export class Using implements IAutoComplete {
     constructor(private fileInspector: IFileSystemInspector) {}
-    public async getSuggestions(line: string, document: ISourceDocument): Promise<IPathSuggestion[]> {
+    public async getSuggestions(line: string, document: ISourceDocument, documentContext: string): Promise<IPathSuggestion[]> {
         if (!line) {
             return [];
         }

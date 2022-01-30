@@ -2,6 +2,15 @@ import { Cursor, ISourceDocument } from "./ISourceDocument";
 import { getAutoHintDb } from "./WerckmeisterAutoHintDb";
 import * as _ from 'lodash';
 
+export const SupportedDocumentContextValues = {
+    voice: "voice",
+    document: "document",
+    track: "track",
+    accomp: "accomp",
+    mod: "mod",
+    voicingStrategy: "voicingStrategy"
+};
+
 export const SupportedUsingFileExtensions = [
     '.lua',
     '.template',
@@ -27,6 +36,9 @@ const ExpressionRegex = [
 
 ]
 const IsExpression = new RegExp(`.*?(${ExpressionRegex.join('|')})`, 's');
+const IsCommand = /(.*\/(?<a>\w+$))|(^(?<b>[a-zA-Z]+)$)/;
+const IsVoiceContext = /\.*?\{[^}]*$/;
+const IsTrackContext = /\.*?\[[^\]]*$/;
 
 export const SupportedFileExtensions = [...SupportedUsingFileExtensions, '.sheet'];
 
@@ -56,10 +68,28 @@ export async function getExpressionLine(document: ISourceDocument, cursor: Curso
     }
     // check if we are at the beginning of an expression
     let line = await document.getRange({line: cursor.line, col: 0}, cursor);
-    const termMatches = line.match(/(.*\/(?<a>\w+$))|(^(?<b>[a-zA-Z]+)$)/)?.groups || {};
+    const termMatches = line.match(IsCommand)?.groups || {};
     let searchTerm =  termMatches.a || termMatches.b;
     if (searchTerm) {
         return searchTerm;
     }
     return "";
+}
+
+/**
+ * returns the context of the current expression, such as "document", "track", "voice"
+ * @param document 
+ * @param cursor 
+ */
+ export async function getExpressionDocContext(document: ISourceDocument, cursor: Cursor): Promise<string> {
+    
+    const fromCursor = {line: 0, col: 0};
+    let line = await document.getRange(fromCursor, cursor);
+    if (line.match(IsVoiceContext)) {
+        return SupportedDocumentContextValues.voice;
+    }
+    if (line.match(IsTrackContext)) {
+        return SupportedDocumentContextValues.track;
+    }
+    return SupportedDocumentContextValues.document;
 }

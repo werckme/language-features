@@ -130,7 +130,7 @@ export class CommandArgument implements IAutoComplete {
         }));
     }
 
-    public async getSuggestions(line: string, document: ISourceDocument): Promise<ICommandSuggestion[]> {
+    public async getSuggestions(line: string, document: ISourceDocument, documentContext: string): Promise<ICommandSuggestion[]> {
         if (!line) {
             return [];
         }

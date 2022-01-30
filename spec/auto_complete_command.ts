@@ -44,7 +44,7 @@ describe('should command suggestions', () => {
   it('should return volume command', async () => {
     const fs = new FileSystemInspectorMock();
     const toTest = new LanguageFeatures(fs);
-    const doc = new TestDocument("/vol");
+    const doc = new TestDocument("[{ /vol");
     expect((await toTest.autoComplete(doc)).length).to.equal(1);
     expect((await toTest.autoComplete(doc))[0].displayText).to.equal("volume");
   });

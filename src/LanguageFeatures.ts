@@ -1,4 +1,4 @@
-import { getExpressionLine } from "./Common";
+import { getExpressionDocContext, getExpressionLine } from "./Common";
 import { CommandArgument } from "./features/autocomplete/CommandArgument";
 import { Command } from "./features/autocomplete/Command";
 import { ISuggestion } from "./features/autocomplete/ISuggestion";
@@ -23,9 +23,10 @@ export class LanguageFeatures implements ILanguageFeatures {
         if (!line) {
             return [];
         }
+        const documentContext = await getExpressionDocContext(document, cursor);
         const suggestions:ISuggestion[] = [];
         for(const feature of this.features.autoCompletes) {
-            const featureSuggestions = await feature.getSuggestions(line, document);
+            const featureSuggestions = await feature.getSuggestions(line, document, documentContext);
             if (!featureSuggestions) {
                 continue;
             }

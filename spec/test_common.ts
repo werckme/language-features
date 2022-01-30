@@ -8,7 +8,7 @@ import {
   from '../src';
 import * as _ from 'lodash';
 import { getRangeFromText, TestDocument } from './helper';
-import { getExpressionLine } from '../src/Common';
+import { getExpressionDocContext, getExpressionLine, SupportedDocumentContextValues } from '../src/Common';
 import { getAutoHintDb } from '../src/WerckmeisterAutoHintDb';
 const expect = chai.expect;
 
@@ -95,7 +95,7 @@ instrumentDef: myInstrument 0 0 0;
     expect(line).to.equal(`volume`);
   });
   it("should know all document context values", async () => {
-    const ValidDocumentContextValues = ["document", "track", "accomp", "mod", "voicingStrategy", "voice"];
+    const ValidDocumentContextValues = _.values(SupportedDocumentContextValues);
     const db = getAutoHintDb();
     for(const dbKey in db) {
         const dbValue = db[dbKey];
@@ -107,4 +107,96 @@ instrumentDef: myInstrument 0 0 0;
         }
     }
   });
+  it('shoukd return expr. doc. context "document" 1', async () => {
+    const document = new TestDocument(`
+`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`document`);
+  });  
+  it('shoukd return expr. doc. context "document" 2', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+instrument`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`document`);
+  });
+  it('shoukd return expr. doc. context "document" 3', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+
+[
+{
+c d e /vol: xxxx/
+}
+]
+`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`document`);
+  });      
+  it('shoukd return expr. doc. context "track" 1', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+
+[
+`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`track`);
+  });
+
+  it('shoukd return expr. doc. context "track" 2', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+
+[
+instrument`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`track`);
+  });
+
+  it('shoukd return expr. doc. context "track" 3', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+
+[
+instrument: myInstrument;
+`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`track`);
+  });
+
+  it('shoukd return expr. doc. context "voice" 1', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+
+[
+{
+`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`voice`);
+  });
+  it('shoukd return expr. doc. context "voice" 2', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+
+[
+{
+c d e /vol
+`)
+    const line = await getExpressionDocContext(document, await document.getCursor());
+    expect(line).to.equal(`voice`);
+  });                
 });
