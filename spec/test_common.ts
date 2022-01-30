@@ -9,6 +9,7 @@ import {
 import * as _ from 'lodash';
 import { getRangeFromText, TestDocument } from './helper';
 import { getExpressionLine } from '../src/Common';
+import { getAutoHintDb } from '../src/WerckmeisterAutoHintDb';
 const expect = chai.expect;
 
 chai.should();
@@ -92,5 +93,18 @@ instrumentDef: myInstrument 0 0 0;
   c d e f | g /volume`)
     const line = await getExpressionLine(document, await document.getCursor());
     expect(line).to.equal(`volume`);
-  });    
+  });
+  it("should know all document context values", async () => {
+    const ValidDocumentContextValues = ["document", "track", "accomp", "mod", "voicingStrategy", "voice"];
+    const db = getAutoHintDb();
+    for(const dbKey in db) {
+        const dbValue = db[dbKey];
+        const docContextValues = dbValue.getDocumentContext();
+        expect(docContextValues.length).to.greaterThan(0);
+        for(const docContextValue of docContextValues) {
+            expect(ValidDocumentContextValues, `Weckmeister AutoHintDB: no valid doc context for "${dbKey}" ("${docContextValue}")`)
+              .to.contains(docContextValue);
+        }
+    }
+  });
 });

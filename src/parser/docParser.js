@@ -18,6 +18,15 @@ var Command = /** @class */ (function () {
     function Command(rawObject) {
         this.rawObject = rawObject;
     }
+    Command.prototype.getDocumentContext = function () {
+        var _a, _b;
+        var txtValue = (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['@where'];
+        if (!txtValue) {
+            return [];
+        }
+        return txtValue.split(',')
+            .map(function (x) { return x.trim(); });
+    };
     Command.prototype.getName = function () { var _a, _b; return (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['@name']; };
     Command.prototype.getDescription = function () { var _a, _b; return (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['#']; };
     Command.prototype.getParameter = function () {

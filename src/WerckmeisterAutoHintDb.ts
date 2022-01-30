@@ -1,3 +1,4 @@
+import _ = require("lodash");
 import { CommandDb, parseCommandDbJson } from "./parser/docParser";
 
 const fs = require('fs');

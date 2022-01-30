@@ -16,7 +16,6 @@ export class Command implements IAutoComplete {
         const matches =_(this.commandDb)
             .filter((v, k) => k.toLowerCase().indexOf(searchTerm) >= 0)
             .value();
-        console.log(_(this.commandDb).map((x, y)=>y + " " + x.getDocumentContext()).value());
         return matches.map(x => ({
             displayText: x.getName(),
             text: x.getName(),
