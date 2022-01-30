@@ -8,7 +8,13 @@ class CommandParameter implements ICommandParameter {
     public getName(): string { return (this.rawObject || {})['@name']; }
     public getIsOptional(): boolean { return (this.rawObject || {})['@optional'] === '1'; }
     public getType(): string { return (this.rawObject || {})['@type']; }
-    public getDescription(): string { return (this.rawObject || {})['#']; }
+    public getDescription(): string { 
+        const result = (this.rawObject || {})['#']; 
+        if (result && result.join) {
+            return result.join('\n');
+        }
+        return result;
+    }
     public getIsDeprecated(): boolean { return (this.rawObject || {})['@deprecated'].length > 0; }
     public getDeprecatedText(): string { return (this.rawObject || {})['@deprecated']; }
 }
@@ -25,7 +31,13 @@ class Command implements ICommand {
             .map(x => x.trim());
     }
     public getName(): string { return (this.rawObject?.doc?.command || {})['@name']; }
-    public getDescription(): string { return (this.rawObject?.doc?.command || {})['#']; }
+    public getDescription(): string { 
+        const result = (this.rawObject?.doc?.command || {})['#']; 
+        if (result && result.join) {
+            return (result as Array<string>).join('\n');
+        }
+        return result;
+    }
     public getParameter(): ICommandParameter[] {
         let params = this.rawObject?.doc?.param;
         if (!params) {

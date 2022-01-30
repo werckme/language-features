@@ -249,5 +249,13 @@ describe('should return command argument completion', () => {
     const hints = await toTest.autoComplete(doc);
     const cc = hints.find(x => x.displayText === "cc");
     expect(cc.deprecated.length).greaterThan(0);
+  });
+  it('should have description', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("mark: _");
+    const hints = (await toTest.autoComplete(doc));
+    expect(hints.length).to.equal(1);
+    expect(hints[0].description).to.be.a("string");
   });             
 });

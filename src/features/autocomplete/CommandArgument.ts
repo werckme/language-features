@@ -80,7 +80,8 @@ export class CommandArgument implements IAutoComplete {
           displayText: parameter.getName(),
           text: `_${parameter.getName()}`,
           deprecated: parameter.getDeprecatedText(),
-          command: command
+          command: command,
+          description: parameter.getDescription()
         }));
     }
 

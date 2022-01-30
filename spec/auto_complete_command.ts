@@ -48,4 +48,11 @@ describe('should command suggestions', () => {
     expect((await toTest.autoComplete(doc)).length).to.equal(1);
     expect((await toTest.autoComplete(doc))[0].displayText).to.equal("volume");
   });
+  it('should return description', async () => {
+    const fs = new FileSystemInspectorMock();
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument("[{ /mark");
+    expect((await toTest.autoComplete(doc)).length).to.equal(1);
+    expect((await toTest.autoComplete(doc))[0].description).to.be.a("string");
+  });
 });
