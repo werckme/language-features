@@ -3,4 +3,5 @@ export interface ISuggestion {
     text: string;
     deprecated?: string;
     description?: string;
+    url?: string;
 }

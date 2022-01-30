@@ -15,4 +15,5 @@ export interface ICommand {
     getDocumentContext(): string[];
     getDescription(): string;
     getParameter(): ICommandParameter[];
+    getUrl(): string;
 }

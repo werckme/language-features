@@ -3,6 +3,8 @@ import { ICommand, ICommandParameter } from '../model/Command';
 
 export type CommandDb = {[name: string]: ICommand};
 
+const WerckmeisterManualUrl = 'https://werckme.github.io/manual';
+
 class CommandParameter implements ICommandParameter {
     constructor(private rawObject) {}
     public getName(): string { return (this.rawObject || {})['@name']; }
@@ -31,6 +33,9 @@ class Command implements ICommand {
             .map(x => x.trim());
     }
     public getName(): string { return (this.rawObject?.doc?.command || {})['@name']; }
+
+    public getUrl(): string { return `https://werckme.github.io/manual#${this.getName()}`; }
+
     public getDescription(): string { 
         let result = (this.rawObject?.doc?.command || {})['#']; 
         if (result && result.join) {

@@ -19,7 +19,8 @@ export class Command implements IAutoComplete {
         return matches.map(x => ({
             displayText: x.getName(),
             text: x.getName(),
-            description: x.getDescription()
+            description: x.getDescription(),
+            url:x.getUrl()
         }));
     }
    
