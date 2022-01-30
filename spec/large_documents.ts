@@ -1,0 +1,289 @@
+export const AutoCompleteCommandMark = `
+using "./myConfig.config";
+using "chords/default.chords";
+using "lua/voicings/simple.lua";
+using "lua/voicings/guitar.lua";
+using "lua/mods/swing.lua";
+using "lua/mods/staccato.lua";
+using "templates/drums.disco.template";
+using "templates/bass.disco.template";
+using "templates/bass.bossanova.template";
+using "templates/rhythm.country.template";
+using "templates/rhythm.bossanova.template";
+using "templates/drums.bossanova.template";
+using "templates/drums.country.template";
+using "templates/bass.country.template";
+using "lua/mods/guitarStroke.lua";
+ 
+
+-- define your instruments:
+-- (ch= channel, pc= programm change, cc= control change)
+--             name       device 
+instrumentDef: piano      MyDevice _ch=0 _cc=0 _pc=0;
+instrumentDef: lead       MyDevice _ch=1 _cc=0 _pc=105;
+instrumentDef: lead2      MyDevice _ch=2 _cc=0 _pc=25;
+instrumentDef: sitar      MyDevice _ch=6 _cc=0 _pc=104;
+instrumentDef: rhythm     MyDevice _ch=3 _cc=0 _pc=25;
+instrumentDef: bass       MyDevice _ch=4 _cc=0 _pc=26;
+instrumentDef: bell       MyDevice _ch=5 _cc=0 _pc=14;
+instrumentDef: drums      MyDevice _ch=9 _cc=0 _pc=0;
+
+instrumentConf: rhythm voicingStrategy guitar _range=tenor;  
+instrumentConf: rhythm mod guitarStroke;
+instrumentConf: rhythm
+    pan    60
+    volume 70
+;   
+
+instrumentConf: bass
+    volume 100
+    voicingStrategy simple _range=contrabass
+;   
+
+instrumentConf: piano
+    volume 70;  
+
+instrumentConf: lead 
+    pan 50
+    volume 90;   
+
+instrumentConf: lead2
+    pan 30
+    volume 90;   
+
+instrumentConf: sitar
+    pan 40
+    volume 60;  
+
+instrumentConf: bell
+    pan 60
+    volume 90;   
+
+instrumentConf: drums
+    volume 90;       
+
+
+tempo:  73;
+
+[
+instrument: lead;
+{
+    /signature: 2 4/
+    /mod: staccato _amount=90/
+    /do: swing _grid=8 _offset =15/
+    \fff  
+    r2 | r2 | r2 | r2  | d'8. &16 &32 & &8 r16 | c'16 f d b,   g c' &32 & b e | c8. f'32 c' e'16 e &32 b, g, a, |
+    c'8 &16 &32 &  e' g g, e b c' r16 | b8. (d' g' b)8  g16 e g | g'8 &&& | 
+    -- repeat
+            d'8. &16 &32 & &8 r16 | c'16 f d b,   g c' &32 & b e | c8. f'32 c' e'16 e &32 b, g, a, |
+    c'8 &16 &32 &  e' g g, e b c' r16 | b8. (d' g' b)8  g16 e g | g'8 &&& |
+    -- |:
+    bb'8. &16  d'32 g d d' f' g' d' &   | a'8. &16  c#'32 g d c' e' f#' c' & |
+    (g'8 d' bb a g)4  f16. g32 f16 g32 & | -- :|
+    -- |:
+    bb'8. &16  d'32 g d d' f' g' d' &   | a'8. &16  c#'32 g d c' e' f#' c' & |
+    (g'8 d' bb a g)4  f32 a b d' g' d g b |
+    d'32 a b a bb f f# e  d8. a32 &  | 
+    
+    (a&&)4 bb8.  c32 & | c'8. bb16 a & g32 &&& | d'8 d8. r16 (d'&&)8 |
+    d'8 d8. r16 &32 & &16~ | (da&)4  bb8. c32 & | c'8. bb16 a & g32 &&& |
+    g'8 g8. r16 g' & | g'8 g8. r16 g32 & &16 |
+
+
+    d'8. &16 &32 & &8 r16 | c'16 f d b,   g c' &32 & b e | c8. f'32 c' e'16 e &32 b, g, a, |
+    c'8 &16 &32 &  e' g g, e b c' r16 | b8. (d' g' b)8  g16 e g | g'8 &&& | 
+    -- repeat
+    d'8. &16 &32 & &8 r16 | c'16 f d b,   g c' &32 & b e | c8. f'32 c' e'16 e &32 b, g, a, |
+    c'8 &16 &32 &  e' g g, e b c' r16 | b8. (d' g' b)8  g16 e g | g'8 &&& |
+
+    -- |:
+    bb'8. &16  d'32 g d d' f' g' d' &   | a'8. &16  c#'32 g d c' e' f#' c' & |
+    (g'8 d' bb a g)4  f16. g32 f16 g32 & | -- :|
+    -- |:
+    bb'8. &16  d'32 g d d' f' g' d' &   | a'8. &16  c#'32 g d c' e' f#' c' & |
+    (g'8 d' bb a g)4   f32 a b d' g' d g b | d'32 a b a bb f f# e  d8. a32 &  |
+    (a&&)4 bb8.  c32 & | c'8. bb16 a & g32 &&& | d'8 d8. r16 (d'&&)8 |
+    d'8 d8. r16 &32 & &16~ | (da&)4  bb8. c32 & | c'8. bb16 a & g32 &&& |
+    g'8 g8. r16 g' & | g'8 g8. r16 g32 & &16 |
+
+}
+]
+
+
+[
+type: accomp;
+{    
+    /tempo: double/ 
+    /signature: 4 4/  
+    ----------    
+    /template:  
+        myTemplate
+        drums.country.normal
+        bass.country.normal
+        rhythm.bossanova.normal
+    /   
+    G | G | G | G    | G   | G7 | G6 | G/5 | G | G7 |
+    ----------
+    /template:  
+        myTemplate
+        drums.disco.normal
+        bass.country.normal
+        rhythm.bossanova.normal
+    / 
+    G    | G   | G7 | G6 | G/5 | G |
+    -- |:
+    ----------
+    /template:  
+        myTemplate
+        drums.country.normal
+        bass.country.normal
+        rhythm.bossanova.normal
+    /     
+    
+    Bb7 | A-7 | G |  -- :|
+    -- |:
+    Bb7 | A-7 | G | D7 | F | A-7 | D7 | D7 | F |
+    ----------
+    /template:  
+        myTemplate
+        drums.disco.normal
+        bass.country.normal
+        rhythm.country.normal
+    /  
+    A-7 |  
+    ----------
+    /template:  
+        myTemplate
+        drums.fill1
+        bass.country.normal
+        rhythm.country.ende
+    /
+    /tempo: normal/
+    G13  |
+    ----------
+    /template:  
+        myTemplate
+        drums.country.normal
+        bass.country.normal
+        rhythm.country.normal
+    /
+    /tempo: double/
+    G   | G7 | G6 | G/5 | G | G7 |
+    ----------
+    /template:  
+        myTemplate
+        drums.country.normal
+        bass.country.normal
+        rhythm.country.normal
+    /
+    G    | G   | G7 | G6 | G/5 | G |
+    -- |:
+    ----------
+    /template:  
+        myTemplate
+        drums.disco.normal
+        bass.country.normal
+        rhythm.bossanova.normal
+    /    
+    Bb7 | A-7 | 
+    ----------
+    /template:  
+        myTemplate
+        drums.bossanova.normal
+        bass.bossanova.normal
+        rhythm.bossanova.normal
+    /        
+    G |  -- :|
+    /template:  
+        myTemplate
+        drums.disco.normal
+        bass.country.normal
+        rhythm.bossanova.normal
+    /    
+    -- |:
+    Bb7 | A-7 | 
+
+    /template:  
+        myTemplate
+        drums.country.normal
+        bass.country.normal
+        rhythm.bossanova.normal
+    /      
+
+    G | D7 | F | A-7 | 
+    
+    /template:  
+        myTemplate
+        drums.bossanova.normal
+        bass.bossanova.normal
+        rhythm.bossanova.normal
+    /       
+
+    D7 | D7 | 
+    
+    /template:  
+        myTemplate
+        drums.country.normal
+        bass.bossanova.normal
+        rhythm.country.normal
+    /       
+    
+    F | A-7 |  
+    
+    /template:  
+        myTemplate
+        drums.bossanova.normal
+        bass.bossanova.normal
+        rhythm.bossanova.normal
+    /        
+    G7  | G7 | 
+    /template:  
+        drums.country.ende
+        bass.country.ende
+        rhythm.country.ende
+    / 
+    /tempo: normal/
+    G7 |
+  
+}
+]
+
+-------------------------------
+-- additional accomp. templates
+-------------------------------
+
+[
+type: template;
+name: myTemplate;
+instrument: sitar;
+{
+    /signature: 4 4/
+    r | r | r | I,,1 | r 
+}
+]
+
+
+[
+type: template;
+name: myTemplate;
+instrument: bell;
+{
+    /signature: 4 4/
+    /doOnce: bend from 70/
+    I1 | r | r | r
+}
+]
+
+
+[
+type: template;
+name: drums.fill1;
+instrument: drums; 
+{
+    /signature: 4 4/
+    "cy"8  r "ho"  r "ho"  r "ho" r   |
+}
+{
+    /signature: 4 4/
+    "bd"   !ffff"hto1"64->"hto2"4.       "mto1"8       !ffff"mto2"8. !fff"lto1" r16   |
+    /ma`; 
