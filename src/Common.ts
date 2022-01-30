@@ -1,5 +1,5 @@
 import { Cursor, ISourceDocument } from "./ISourceDocument";
-import { getAutoHintDb } from "./features/autocomplete/WerckmeisterAutoHintDb";
+import { getAutoHintDb } from "./WerckmeisterAutoHintDb";
 import * as _ from 'lodash';
 
 export const SupportedUsingFileExtensions = [
@@ -57,7 +57,6 @@ export async function getExpressionLine(document: ISourceDocument, cursor: Curso
     let line = await document.getRange({line: cursor.line, col: 0}, cursor);
     const termMatches = line.match(/(.*\/(?<a>\w+$))|(^(?<b>[a-zA-Z]+)$)/)?.groups || {};
     let searchTerm =  termMatches.a || termMatches.b;
-    console.log(searchTerm)
     if (searchTerm) {
         return searchTerm;
     }

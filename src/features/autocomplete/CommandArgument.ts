@@ -6,7 +6,7 @@ import { ICommand, ICommandParameter } from "../../model/Command";
 import { Keywords } from "../../Common";
 import { ICommandSuggestion } from "./ICommandSuggestion";
 import { GMInstruments } from "./GMInstruments";
-import { getAutoHintDb } from "./WerckmeisterAutoHintDb";
+import { getAutoHintDb } from "../../WerckmeisterAutoHintDb";
 
 const LoadModInstructions = [Keywords.mod, Keywords.voicingStrategy, Keywords.do, Keywords.doOnce];
 const BuiltInMods = [Keywords.volume, Keywords.pan]

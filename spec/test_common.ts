@@ -62,5 +62,15 @@ _b=200/
     const document = new TestDocument(`instrument`)
     const line = await getExpressionLine(document, await document.getCursor());
     expect(line).to.equal(`instrument`);
-  });  
+  });
+  it('return command', async () => {
+    const document = new TestDocument(`/myCommand`)
+    const line = await getExpressionLine(document, await document.getCursor());
+    expect(line).to.equal(`myCommand`);
+  });
+  it('return command within line', async () => {
+    const document = new TestDocument(`c d e f g | c "ht" /myCommand`)
+    const line = await getExpressionLine(document, await document.getCursor());
+    expect(line).to.equal(`myCommand`);
+  });    
 });
