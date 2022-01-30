@@ -28,9 +28,9 @@ describe('should return expression line', () => {
   it('return expression line for instrumentConf', async () => {
     const document = new TestDocument(`instrumentConf: bass
 mod staccato _grid=16
-volume 100;`)
+volume 100`)
     const line = await getExpressionLine(document, await document.getCursor());
-    expect(line).to.equal(`instrumentConf: bass mod staccato _grid=16 volume 100;`);
+    expect(line).to.equal(`instrumentConf: bass mod staccato _grid=16 volume 100`);
   });
   it('return two expressions in one line', async () => {
     const document = new TestDocument(`instrumentConf: bass mod staccato; instrumentConf: piano volume 10`)
@@ -72,5 +72,25 @@ _b=200/
     const document = new TestDocument(`c d e f g | c "ht" /myCommand`)
     const line = await getExpressionLine(document, await document.getCursor());
     expect(line).to.equal(`myCommand`);
+  });
+  it('return documentConfig within document', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+instrument`)
+    const line = await getExpressionLine(document, await document.getCursor());
+    expect(line).to.equal(`instrument`);
+  });
+  it('return command within voice', async () => {
+    const document = new TestDocument(`
+using "/somefile";
+using "/someOtherFile";
+instrumentDef: myInstrument 0 0 0;
+[
+{
+  c d e f | g /volume`)
+    const line = await getExpressionLine(document, await document.getCursor());
+    expect(line).to.equal(`volume`);
   });    
 });

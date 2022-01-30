@@ -22,11 +22,11 @@ export const AllMetaCommands = _.values(MetaCommands);
 
 
 const ExpressionRegex = [
-    `(${AllMetaCommands.join('|')})\\s*:\\s*.*`,
-    `${Keywords.using}.*`,
+    `(${AllMetaCommands.join('|')})\\s*:\\s*[^/;]*$`,
+    `${Keywords.using}[^;]*$`,
 
 ]
-const IsExpression = new RegExp(`.*(${ExpressionRegex.join('|')})`, 's');
+const IsExpression = new RegExp(`.*?(${ExpressionRegex.join('|')})`, 's');
 
 export const SupportedFileExtensions = [...SupportedUsingFileExtensions, '.sheet'];
 
@@ -43,6 +43,7 @@ export function getFileExtension(path: string): string|undefined {
  * @param cursor 
  */
 export async function getExpressionLine(document: ISourceDocument, cursor: Cursor): Promise<string> {
+    
     // check if we are within an expression
     for(let lineNr = cursor.line; lineNr >= 0; --lineNr) {
         const fromCursor = {line: lineNr, col: 0};
