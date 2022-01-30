@@ -1,4 +1,4 @@
-import { ICommand, ICommandParameter } from "../../documents/Command";
+import { ICommand, ICommandParameter } from "../../model/Command";
 import { ISuggestion } from "./ISuggestion";
 
 export interface ICommandSuggestion extends ISuggestion {

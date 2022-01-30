@@ -1,5 +1,5 @@
 import { fromXML } from 'from-xml'
-import { ICommand, ICommandParameter } from '../documents/Command';
+import { ICommand, ICommandParameter } from '../model/Command';
 
 export type CommandDb = {[name: string]: ICommand};
 

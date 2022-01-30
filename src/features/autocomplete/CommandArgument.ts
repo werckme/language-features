@@ -2,7 +2,7 @@ import { ISourceDocument } from "../../ISourceDocument";
 import { IAutoComplete } from "./IAutoComplete";
 import * as _ from 'lodash';
 import { CommandDb, parseCommandDbJson } from "../../parser/docParser";
-import { ICommand, ICommandParameter } from "../../../src/documents/Command";
+import { ICommand, ICommandParameter } from "../../model/Command";
 import { Keywords } from "../../Common";
 import { ICommandSuggestion } from "./ICommandSuggestion";
 import { GMInstruments } from "./GMInstruments";
