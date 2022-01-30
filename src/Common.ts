@@ -12,7 +12,7 @@ export const SupportedUsingFileExtensions = [
 ];
 
 export const MetaCommands = _.fromPairs(_.map(getAutoHintDb(), (v,k)=>[k, k]));
-export const Keywords:any = {
+export const Keywords:{[name: string]: string} = {
     using: "using", 
     ...MetaCommands
 };
