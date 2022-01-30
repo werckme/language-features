@@ -9,6 +9,10 @@ export interface ICommandParameter {
 
 export interface ICommand {
     getName(): string;
+    /**
+     * return the "where" the command appears. E.g.: ["document", "track", "voice", ...]
+     */
+    getDocumentContext(): string[];
     getDescription(): string;
     getParameter(): ICommandParameter[];
 }

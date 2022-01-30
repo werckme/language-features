@@ -16,6 +16,14 @@ class CommandParameter implements ICommandParameter {
 class Command implements ICommand {
     constructor(private rawObject) {
     }
+    getDocumentContext(): string[] { 
+        const txtValue:string|undefined = (this.rawObject?.doc?.command || {})['@where'];
+        if (!txtValue) {
+            return [];
+        }
+        return txtValue.split(',')
+            .map(x => x.trim());
+    }
     public getName(): string { return (this.rawObject?.doc?.command || {})['@name']; }
     public getDescription(): string { return (this.rawObject?.doc?.command || {})['#']; }
     public getParameter(): ICommandParameter[] {
