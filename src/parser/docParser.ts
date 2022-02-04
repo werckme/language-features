@@ -3,7 +3,7 @@ import { ICommand, ICommandParameter } from '../model/Command';
 
 export type CommandDb = {[name: string]: ICommand};
 
-const WerckmeisterManualUrl = 'https://werckme.github.io/manual';
+const WerckmeisterUrl = 'https://werckme.github.io';
 
 class CommandParameter implements ICommandParameter {
     constructor(private rawObject) {}
@@ -87,7 +87,8 @@ export class DocParser {
 
     private normalizeText(text: string) {
         return text
-            .replace(/manual\/#/g, 'https://werckme.github.io/manual#')
+            .replace(/(\[.*\])\(\s*\/{0,1}manual(.*)\)/g, `$1(${WerckmeisterUrl}/manual$2)`)
+            .replace(/(\[.*\])\((?!(\s*http|\s*https|\s*ftp))\s*(.*)\)/g, `$1(${WerckmeisterUrl}/manual$3)`)
             .replace(/\\n/g, '');
     }
 

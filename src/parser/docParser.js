@@ -2,6 +2,7 @@
 exports.__esModule = true;
 exports.DocParser = exports.parseCommandDbJson = void 0;
 var from_xml_1 = require("from-xml");
+var WerckmeisterUrl = 'https://werckme.github.io';
 var CommandParameter = /** @class */ (function () {
     function CommandParameter(rawObject) {
         this.rawObject = rawObject;
@@ -34,6 +35,7 @@ var Command = /** @class */ (function () {
             .map(function (x) { return x.trim(); });
     };
     Command.prototype.getName = function () { var _a, _b; return (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['@name']; };
+    Command.prototype.getUrl = function () { return "https://werckme.github.io/manual#" + this.getName(); };
     Command.prototype.getDescription = function () {
         var _a, _b;
         var result = (((_b = (_a = this.rawObject) === null || _a === void 0 ? void 0 : _a.doc) === null || _b === void 0 ? void 0 : _b.command) || {})['#'];
@@ -89,7 +91,8 @@ var DocParser = /** @class */ (function () {
     };
     DocParser.prototype.normalizeText = function (text) {
         return text
-            .replace(/manual\/#/g, 'https://werckme.github.io/manual#')
+            .replace(/(\[.*\])\(\s*\/{0,1}manual(.*)\)/g, "$1(" + WerckmeisterUrl + "/manual$2)")
+            .replace(/(\[.*\])\((?!(\s*http|\s*https|\s*ftp))\s*(.*)\)/g, "$1(" + WerckmeisterUrl + "/manual$3)")
             .replace(/\\n/g, '');
     };
     DocParser.prototype.parseDocumentText = function (text) {
