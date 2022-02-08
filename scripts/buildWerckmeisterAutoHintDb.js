@@ -1,10 +1,12 @@
 "use strict";
 exports.__esModule = true;
-var fs = require("fs");
 var inDirs = ['./ext/werckmeister/src', './ext/werckmeister/examples/lua'];
-var outFile = './data/werckmeisterAutoHintDb.json';
+var autoHintOutFile = './data/werckmeisterAutoHintDb.json';
+var preInstalledAuxFiles = './data/preInstalledAuxFiles.json';
 var dree = require('dree');
 var docParser_1 = require("../src/parser/docParser");
+var fsPath = require("path");
+var fs = require("fs");
 var docParser = new docParser_1.DocParser();
 function onFile(el) {
     var txt = fs.readFileSync(el.path, { encoding: 'utf8', flag: 'r' });
@@ -22,4 +24,30 @@ var options = {
 };
 inDirs.forEach(function (dir) { return dree.scan(dir, options, onFile); });
 var json = JSON.stringify(docParser.commandDb);
-fs.writeFileSync(outFile, json);
+fs.writeFileSync(autoHintOutFile, json);
+var auxFiles = {};
+dree.scan("./ext/werckmeister/examples", { stat: false, normalize: true }, function (file) {
+    var path = file.relativePath;
+    var dir = '/' + fsPath.dirname(path);
+    if (dir === '/.') {
+        dir = '/';
+    }
+    var files = auxFiles[dir];
+    if (!files) {
+        var absDirPath_1 = fsPath.dirname(file.path);
+        files = [];
+        auxFiles[dir] = files;
+        var subDirectories = fs.readdirSync(absDirPath_1)
+            .filter(function (x) { return fs.statSync(fsPath.join(absDirPath_1, x)).isDirectory(); })
+            .map(function (x) { return ({ name: x, isDirectory: true }); });
+        files.push.apply(files, subDirectories);
+    }
+    if (file.name.trim().startsWith('_') || dir === '/') {
+        return;
+    }
+    files.push({
+        name: file.name
+    });
+});
+var auxFilesJson = JSON.stringify(auxFiles);
+fs.writeFileSync(preInstalledAuxFiles, auxFilesJson);

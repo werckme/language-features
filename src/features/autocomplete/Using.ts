@@ -4,9 +4,29 @@ import { ISourceDocument } from "../../ISourceDocument";
 import { IAutoComplete } from "./IAutoComplete";
 import * as _ from 'lodash';
 import { IPathSuggestion } from "./IPathSuggestion";
+import { getPreInstalledAuxFiles } from "../../WerckmeisterAutoHintDb";
+
+const preInstalledAuxFiles = getPreInstalledAuxFiles();
 
 export class Using implements IAutoComplete {
     constructor(private fileInspector: IFileSystemInspector) {}
+
+    private async ls(path: string): Promise<FileInfo[]> {
+        path = path.trim();
+        const fileContent = await this.fileInspector.ls(path);
+        if (path.endsWith('/') && path.length > 1) {
+            path = _.trimEnd(path, '/');
+        }
+        const auxFiles = preInstalledAuxFiles[path];
+        if (auxFiles) {
+            fileContent.push(...(auxFiles.map(x => ({
+                name: x.name,
+                isDirectory: x.isDirectory || false
+            }))));
+        }
+        return fileContent;
+    }
+
     public async getSuggestions(line: string, document: ISourceDocument, documentContext: string): Promise<IPathSuggestion[]> {
         if (!line) {
             return [];
@@ -27,7 +47,7 @@ export class Using implements IAutoComplete {
             searchPath = await this.fileInspector.getParentPath(typingPath);
         }
         searchPath = await this.fileInspector.resolve(documentPath, searchPath);
-        const files = await this.fileInspector.ls(searchPath);
+        const files = await this.ls(searchPath);
         let result = files
             .filter(file => file.isDirectory 
                 || SupportedUsingFileExtensions.includes(getFileExtension(file.name)))

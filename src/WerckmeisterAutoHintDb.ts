@@ -8,3 +8,10 @@ const commandDb = parseCommandDbJson(autoHintDbJson);
 export function getAutoHintDb(): CommandDb {
     return commandDb;
 }
+
+const preInstalledAuxFiles = JSON.parse(fs.readFileSync('./data/preInstalledAuxFiles.json', 'utf8'));
+
+
+export function getPreInstalledAuxFiles(): {[path: string]: {name: string, isDirectory?: boolean}[] } {
+    return preInstalledAuxFiles;
+}
