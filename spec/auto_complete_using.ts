@@ -320,5 +320,14 @@ describe('should return files and directories', () => {
     expect(suggestions.map(x => x.text)).to.contains('chords');
     expect(suggestions.map(x => x.text)).to.contains('pitchmaps');
     expect(suggestions.map(x => x.text)).to.contains('templates');
-  });  
+  });
+  it('return pre installed lua directories', async () => {
+    const fs = new FileSystemInspectorMock({});
+    const toTest = new LanguageFeatures(fs);
+    const doc = new TestDocument(`using "/lua/`);
+    const suggestions = await toTest.autoComplete(doc);
+    expect(suggestions.length).to.equal(3);
+    expect(suggestions.map(x => x.text)).to.contains('mods');
+    expect(suggestions.map(x => x.text)).to.contains('voicings');
+  });    
 });

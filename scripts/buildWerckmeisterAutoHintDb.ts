@@ -29,7 +29,7 @@ const json = JSON.stringify(docParser.commandDb);
 fs.writeFileSync(autoHintOutFile, json);
 
 const auxFiles: {[path:string]: any[]} = {};
-dree.scan("./ext/werckmeister/examples", {stat:false, normalize: true}, (file)=> {
+dree.scan("./ext/werckmeister/examples", {stat:false, normalize: true, emptyDirectory: true}, (file)=> {
     const path:string = file.relativePath;
     let dir = '/' + fsPath.dirname(path);
     if (dir === '/.') {
@@ -51,6 +51,21 @@ dree.scan("./ext/werckmeister/examples", {stat:false, normalize: true}, (file)=>
     files.push({
         name: file.name
     });
+}, dirObject => {
+    const dir = "/" + dirObject.relativePath;
+    if (dir === '/.') {
+        return;
+    }
+    let files = auxFiles[dir];
+    if (!files) {
+        const absDirPath = dirObject.path;
+        files = [];
+        auxFiles[dir] = files;
+        const subDirectories = fs.readdirSync(absDirPath)
+            .filter(x => fs.statSync(fsPath.join(absDirPath, x)).isDirectory())
+            .map(x => ({name: x, isDirectory: true}));
+        files.push(...subDirectories);
+    }
 });
 const auxFilesJson = JSON.stringify(auxFiles);
 fs.writeFileSync(preInstalledAuxFiles, auxFilesJson);
