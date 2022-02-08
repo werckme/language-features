@@ -13,7 +13,7 @@ export class Using implements IAutoComplete {
 
     private async ls(path: string): Promise<FileInfo[]> {
         path = path.trim();
-        const fileContent = await this.fileInspector.ls(path);
+        let fileContent = await this.fileInspector.ls(path);
         if (path.endsWith('/') && path.length > 1) {
             path = _.trimEnd(path, '/');
         }
@@ -24,6 +24,7 @@ export class Using implements IAutoComplete {
                 isDirectory: x.isDirectory || false
             }))));
         }
+        fileContent = _.uniqBy(fileContent, x => x.name);
         return fileContent;
     }
 
