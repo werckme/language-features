@@ -137,7 +137,7 @@ describe('should return files and directories', () => {
     const toTest = new LanguageFeatures(fs);
     const doc = new TestDocument('using "./');
     const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(5 + numberOfPreInstalledAuxDirectories);
+    expect(suggestions.length).to.equal(5);
   });  
   it('return resolved relative sub path', async () => {
     const fs = new FileSystemInspectorMock({ '/dir': [
@@ -254,7 +254,7 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using "../');
     doc.documentPath = "/sub/testDoc.sheet";
     const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(5 + numberOfPreInstalledAuxDirectories);
+    expect(suggestions.length).to.equal(5);
   });
   it('return resolved relative parent of parent path', async () => {
     const fs = new FileSystemInspectorMock({ '/': [
@@ -268,7 +268,7 @@ describe('should return files and directories', () => {
     const doc = new TestDocument('using "../../');
     doc.documentPath = "/sub/sub/testDoc.sheet";
     const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(5 + numberOfPreInstalledAuxDirectories);
+    expect(suggestions.length).to.equal(5);
   });  
   it('return filter from beginning', async () => {
     const fs = new FileSystemInspectorMock({ '/': [
