@@ -11,13 +11,13 @@ const preInstalledAuxFiles = getPreInstalledAuxFiles();
 export class Using implements IAutoComplete {
     constructor(private fileInspector: IFileSystemInspector) {}
 
-    private async ls(path: string): Promise<FileInfo[]> {
-        path = path.trim();
+    private async ls(path: string, typingPath: string): Promise<FileInfo[]> {
         let fileContent = await this.fileInspector.ls(path);
-        if (path.endsWith('/') && path.length > 1) {
-            path = _.trimEnd(path, '/');
+        typingPath = typingPath.trim();
+        if (typingPath.endsWith('/') && typingPath.length > 1) {
+            typingPath = _.trimEnd(typingPath, '/');
         }
-        const auxFiles = preInstalledAuxFiles[path];
+        const auxFiles = preInstalledAuxFiles[typingPath];
         if (auxFiles) {
             fileContent.push(...(auxFiles.map(x => ({
                 name: x.name,
@@ -48,7 +48,7 @@ export class Using implements IAutoComplete {
             searchPath = await this.fileInspector.getParentPath(typingPath);
         }
         searchPath = await this.fileInspector.resolve(documentPath, searchPath);
-        const files = await this.ls(searchPath);
+        const files = await this.ls(searchPath, typingPath);
         let result = files
             .filter(file => file.isDirectory 
                 || SupportedUsingFileExtensions.includes(getFileExtension(file.name)))
