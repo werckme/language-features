@@ -7,6 +7,7 @@ import { Keywords } from "../../Common";
 import { ICommandSuggestion } from "./ICommandSuggestion";
 import { GMInstruments } from "./GMInstruments";
 import { getAutoHintDb } from "../../WerckmeisterAutoHintDb";
+import { IEnvironmentInspector } from "../../IEnvironmentInspector";
 
 const LoadModInstructions = [Keywords.mod, Keywords.voicingStrategy, Keywords.do, Keywords.doOnce];
 const BuiltInMods = [Keywords.volume, Keywords.pan]
@@ -14,7 +15,7 @@ const Mods = [...BuiltInMods, ...LoadModInstructions];
 
 export class CommandArgument implements IAutoComplete {
     private autoHintDb: CommandDb;
-    constructor() {
+    constructor(private environmentInspector: IEnvironmentInspector) {
         this.autoHintDb = getAutoHintDb();
     }
 
@@ -85,11 +86,6 @@ export class CommandArgument implements IAutoComplete {
         }));
     }
 
-    /**
-     * 
-     * @param command returns GM instrument names
-     * @returns 
-     */
     private getInstrumentDefPcSuggestions(command: ICommand, parameter: ICommandParameter, typingValue: string): ICommandSuggestion[] {
         let instruments = GMInstruments.map((name, index) => ({
             displayText: `${name} (${index})`,
@@ -104,7 +100,22 @@ export class CommandArgument implements IAutoComplete {
         return instruments;
     }
 
-    private getValueSuggestion(command: ICommand, parameterName: string, typingValue: string): ICommandSuggestion[] {
+    private async getDeviceList(command: ICommand, parameter: ICommandParameter, typingValue: string): Promise<ICommandSuggestion[]> {
+        const devices = await this.environmentInspector.getMidiOutputDevices();
+        let suggestions = devices.map((device) => ({
+            displayText: `${device.name} (${device.id})`,
+            text: device.id,
+            command: command,
+            parameter: parameter
+        }));
+        if (!!typingValue) {
+            suggestions = suggestions.filter(device => device.displayText.
+                toLowerCase().indexOf(typingValue.toLowerCase()) >= 0)
+        }
+        return suggestions;
+    }
+
+    private async getValueSuggestion(command: ICommand, parameterName: string, typingValue: string): Promise<ICommandSuggestion[]> {
         let parameter = command.getParameter()
             .filter(param => param.getName() === parameterName)[0];
         if (!parameter) {
@@ -112,6 +123,9 @@ export class CommandArgument implements IAutoComplete {
         }
         if (command.getName() === Keywords.instrumentDef && parameterName == 'pc') {
             return this.getInstrumentDefPcSuggestions(command, parameter, typingValue);
+        }
+        if (command.getName() === Keywords.device && parameterName == 'usePort') {
+            return await this.getDeviceList(command, parameter, typingValue);
         }
         const typeString = (parameter.getType() || "");
         const valueListMatch = typeString.match(/\[(.*)\]/);
@@ -155,7 +169,7 @@ export class CommandArgument implements IAutoComplete {
         if (isTypingArgumentValue) {
             const parameterName = (match[2] || "").trim();
             const typingValue = (match[4] || "").trim();
-            return this.getValueSuggestion(command, parameterName, typingValue);
+            return await this.getValueSuggestion(command, parameterName, typingValue);
         }
         return this.getParameterSuggestion(command, typingText);
     }

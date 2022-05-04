@@ -10,6 +10,7 @@ from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
 import { getRangeFromText, TestDocument } from './helper';
+import { IEnvironmentInspector, MidiDeviceInfo } from '../src/IEnvironmentInspector';
 const expect = chai.expect;
 
 class FileSystemInspectorMock implements IFileSystemInspector {
@@ -23,6 +24,17 @@ class FileSystemInspectorMock implements IFileSystemInspector {
   async ls(path: Path): Promise<FileInfo[]> {
     return [];
   }
+}
+
+class EnvironmentMock implements IEnvironmentInspector {
+  async getMidiOutputDevices(): Promise<MidiDeviceInfo[]> {
+    return [
+      {name: "My First Device", id: "0"},
+      {name: "My Second Device", id: "1"}
+    ];
+  }
+  
+  
 }
 
 chai.should();
@@ -257,5 +269,15 @@ describe('should return command argument completion', () => {
     const hints = (await toTest.autoComplete(doc));
     expect(hints.length).to.equal(1);
     expect(hints[0].description).to.be.a("string");
-  });             
+  });
+  it('should suggest devices', async () => {
+    const fs = new FileSystemInspectorMock();
+    const ev = new EnvironmentMock();
+    const toTest = new LanguageFeatures(fs, ev);
+    const doc = new TestDocument("device: myDevice midi _usePort=");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints.length).to.equal(2);
+    expect(hints).to.contains("My First Device (0)");
+    expect(hints).to.contains("My Second Device (1)");
+  });               
 });

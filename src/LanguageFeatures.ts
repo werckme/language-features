@@ -6,16 +6,17 @@ import { Using } from "./features/autocomplete/Using";
 import { FileInfo, IFileSystemInspector } from "./IFileSystemInspector";
 import { ILanguageFeatures } from "./ILanguageFeatures";
 import { IActiveSourceDocument } from "./ISourceDocument";
+import { DummyEnvironmentInspector } from "./DummyEnvironmentInspector";
 
 export class LanguageFeatures implements ILanguageFeatures {
     features = {
         autoCompletes: [
             new Using(this.fileSystemInspector),
             new Command(),
-            new CommandArgument()
+            new CommandArgument(this.environmentInspector)
         ]
     }
-    constructor(private fileSystemInspector: IFileSystemInspector) {}
+    constructor(private fileSystemInspector: IFileSystemInspector, private environmentInspector = new DummyEnvironmentInspector()) {}
 
     public async autoComplete(document: IActiveSourceDocument): Promise<ISuggestion[]> {
         const cursor = await document.getCursor();
