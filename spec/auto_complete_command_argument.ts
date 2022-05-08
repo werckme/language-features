@@ -10,7 +10,7 @@ from '../src';
 import * as _ from 'lodash';
 import { IPathSuggestion } from '../src/features/autocomplete/IPathSuggestion';
 import { getRangeFromText, TestDocument } from './helper';
-import { IEnvironmentInspector, MidiDeviceInfo } from '../src/IEnvironmentInspector';
+import { EnvironmentType, IEnvironmentInspector, MidiDeviceInfo } from '../src/IEnvironmentInspector';
 const expect = chai.expect;
 
 class FileSystemInspectorMock implements IFileSystemInspector {
@@ -27,6 +27,8 @@ class FileSystemInspectorMock implements IFileSystemInspector {
 }
 
 class EnvironmentMock implements IEnvironmentInspector {
+  environment:EnvironmentType = "web";
+  webplayerPresets?: string[] = ["X", "Y"];
   async getMidiOutputDevices(): Promise<MidiDeviceInfo[]> {
     return [
       {name: "My First Device", id: "0"},
@@ -279,5 +281,33 @@ describe('should return command argument completion', () => {
     expect(hints.length).to.equal(2);
     expect(hints).to.contains("My First Device (0)");
     expect(hints).to.contains("My Second Device (1)");
-  });               
+  });
+  it('should suggest webplayer', async () => {
+    const fs = new FileSystemInspectorMock();
+    const ev = new EnvironmentMock();
+    const toTest = new LanguageFeatures(fs, ev);
+    const doc = new TestDocument("device: myDevice _isType=");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints).to.contains("webPlayer");
+  });
+  it('should suggest local device types', async () => {
+    const fs = new FileSystemInspectorMock();
+    const ev = new EnvironmentMock();
+    ev.environment = "local";
+    const toTest = new LanguageFeatures(fs, ev);
+    const doc = new TestDocument("device: myDevice _isType=");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints).to.contains("midi");
+    expect(hints).to.contains("fluidSynth");
+  });    
+  it('should suggest webplayer presets', async () => {
+    const fs = new FileSystemInspectorMock();
+    const ev = new EnvironmentMock();
+    
+    const toTest = new LanguageFeatures(fs, ev);
+    const doc = new TestDocument("device: myDevice _isType=webPlayer _useFont=");
+    const hints = (await toTest.autoComplete(doc)).map(x => x.displayText);
+    expect(hints).to.contains("X");
+    expect(hints).to.contains("Y");
+  });                       
 });

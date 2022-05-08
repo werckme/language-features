@@ -127,6 +127,21 @@ export class CommandArgument implements IAutoComplete {
         if (command.getName() === Keywords.device && parameterName == 'usePort') {
             return await this.getDeviceList(command, parameter, typingValue);
         }
+        if (this.environmentInspector.environment === "web" && command.getName() === Keywords.device && parameterName == 'isType') {
+            return [{
+                command: command,
+                displayText: "webPlayer",
+                text: "webPlayer",
+            }];
+        }   
+        if (this.environmentInspector.environment === "web" && command.getName() === Keywords.device && parameterName == 'useFont') {
+            return (this.environmentInspector.webplayerPresets || [])
+                .map(x => ({
+                    command: command, 
+                    displayText: x,
+                    text: x
+                }));
+        }                
         const typeString = (parameter.getType() || "");
         const valueListMatch = typeString.match(/\[(.*)\]/);
         if (!valueListMatch || !valueListMatch[1]) {
