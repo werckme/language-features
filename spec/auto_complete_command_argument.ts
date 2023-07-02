@@ -84,7 +84,7 @@ describe('should return command argument completion', () => {
       "bankMsb",
       "cc",
       "ch",
-      "gmName",
+      "gmInstrument",
       "onDevice",
       "pc", 
       "setName",
