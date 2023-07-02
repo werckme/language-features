@@ -100,6 +100,20 @@ export class CommandArgument implements IAutoComplete {
         return instruments;
     }
 
+    private getInstrumentDefGmNameSuggestions(command: ICommand, parameter: ICommandParameter, typingValue: string): ICommandSuggestion[] {
+        let instruments = GMInstruments.map((name, index) => ({
+            displayText: `${name} (${index})`,
+            text: name,
+            command: command,
+            parameter: parameter
+        }));
+        if (!!typingValue) {
+            instruments = instruments.filter(instrument => instrument.displayText.
+                toLowerCase().indexOf(typingValue.toLowerCase()) >= 0)
+        }
+        return instruments;
+    }
+
     private async getDeviceIdList(command: ICommand, parameter: ICommandParameter, typingValue: string): Promise<ICommandSuggestion[]> {
         const devices = await this.environmentInspector.getMidiOutputDevices();
         let suggestions = devices.map((device) => ({
@@ -139,6 +153,9 @@ export class CommandArgument implements IAutoComplete {
         if (command.getName() === Keywords.instrumentDef && parameterName == 'pc') {
             return this.getInstrumentDefPcSuggestions(command, parameter, typingValue);
         }
+        if (command.getName() === Keywords.instrumentDef && parameterName == 'gmName') {
+            return this.getInstrumentDefGmNameSuggestions(command, parameter, typingValue);
+        }        
         if (command.getName() === Keywords.device && parameterName == 'usePort') {
             return await this.getDeviceIdList(command, parameter, typingValue);
         }
