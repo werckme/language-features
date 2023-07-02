@@ -100,11 +100,26 @@ export class CommandArgument implements IAutoComplete {
         return instruments;
     }
 
-    private async getDeviceList(command: ICommand, parameter: ICommandParameter, typingValue: string): Promise<ICommandSuggestion[]> {
+    private async getDeviceIdList(command: ICommand, parameter: ICommandParameter, typingValue: string): Promise<ICommandSuggestion[]> {
         const devices = await this.environmentInspector.getMidiOutputDevices();
         let suggestions = devices.map((device) => ({
             displayText: `${device.name} (${device.id})`,
             text: device.id,
+            command: command,
+            parameter: parameter
+        }));
+        if (!!typingValue) {
+            suggestions = suggestions.filter(device => device.displayText.
+                toLowerCase().indexOf(typingValue.toLowerCase()) >= 0)
+        }
+        return suggestions;
+    }
+
+    private async getDeviceNameList(command: ICommand, parameter: ICommandParameter, typingValue: string): Promise<ICommandSuggestion[]> {
+        const devices = await this.environmentInspector.getMidiOutputDevices();
+        let suggestions = devices.map((device) => ({
+            displayText: `${device.name} (${device.id})`,
+            text: device.name,
             command: command,
             parameter: parameter
         }));
@@ -125,8 +140,11 @@ export class CommandArgument implements IAutoComplete {
             return this.getInstrumentDefPcSuggestions(command, parameter, typingValue);
         }
         if (command.getName() === Keywords.device && parameterName == 'usePort') {
-            return await this.getDeviceList(command, parameter, typingValue);
+            return await this.getDeviceIdList(command, parameter, typingValue);
         }
+        if (command.getName() === Keywords.device && parameterName == 'useDevice') {
+            return await this.getDeviceNameList(command, parameter, typingValue);
+        }        
         if (this.environmentInspector.environment === "web" && command.getName() === Keywords.device && parameterName == 'isType') {
             return [{
                 command: command,
