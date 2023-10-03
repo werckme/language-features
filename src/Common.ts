@@ -17,7 +17,8 @@ export const SupportedUsingFileExtensions = [
     '.chords',
     '.pitchmap',
     '.config',
-    '.conductions'
+    '.conductions',
+    '.part'
 ];
 
 export const MetaCommands = _.fromPairs(_.map(getAutoHintDb(), (v,k)=>[k, k]));
