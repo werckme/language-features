@@ -327,7 +327,7 @@ describe('should return files and directories', () => {
     const toTest = new LanguageFeatures(fs);
     const doc = new TestDocument(`using "/lua/`);
     const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(3);
+    expect(suggestions.length).to.equal(4);
     expect(suggestions.map(x => x.text)).to.contains('mods');
     expect(suggestions.map(x => x.text)).to.contains('voicings');
   });    
