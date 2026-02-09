@@ -307,28 +307,30 @@ describe('should return files and directories', () => {
     ]});
     const toTest = new LanguageFeatures(fs);
     const doc = new TestDocument(`using 
-    "/`);
-    const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(5 + numberOfPreInstalledAuxDirectories);
-  });
-  it('return pre installed aux files', async () => {
-    const fs = new FileSystemInspectorMock({});
-    const toTest = new LanguageFeatures(fs);
-    const doc = new TestDocument(`using "/`);
-    const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(4);
-    expect(suggestions.map(x => x.text)).to.contains('lua');
-    expect(suggestions.map(x => x.text)).to.contains('chords');
-    expect(suggestions.map(x => x.text)).to.contains('pitchmaps');
-    expect(suggestions.map(x => x.text)).to.contains('templates');
-  });
-  it('return pre installed lua directories', async () => {
-    const fs = new FileSystemInspectorMock({});
-    const toTest = new LanguageFeatures(fs);
-    const doc = new TestDocument(`using "/lua/`);
-    const suggestions = await toTest.autoComplete(doc);
-    expect(suggestions.length).to.equal(4);
-    expect(suggestions.map(x => x.text)).to.contains('mods');
-    expect(suggestions.map(x => x.text)).to.contains('voicings');
+      "/`);
+      const suggestions = await toTest.autoComplete(doc);
+      expect(suggestions.length).to.equal(5 + numberOfPreInstalledAuxDirectories);
+    });
+    it('return pre installed aux files', async () => {
+      const fs = new FileSystemInspectorMock({});
+      const toTest = new LanguageFeatures(fs);
+      const doc = new TestDocument(`using "/`);
+      const suggestions = await toTest.autoComplete(doc);
+      expect(suggestions.length).to.equal(4);
+      expect(suggestions.map(x => x.text)).to.contains('lua');
+      expect(suggestions.map(x => x.text)).to.contains('chords');
+      expect(suggestions.map(x => x.text)).to.contains('pitchmaps');
+      expect(suggestions.map(x => x.text)).to.contains('templates');
+    });
+    it('return pre installed lua directories', async () => {
+      const fs = new FileSystemInspectorMock({});
+      const toTest = new LanguageFeatures(fs);
+      const doc = new TestDocument(`using "/lua/`);
+      const suggestions = await toTest.autoComplete(doc);
+      expect(suggestions.length).to.equal(5);
+      expect(suggestions.map(x => x.text)).to.contains('mods');
+      expect(suggestions.map(x => x.text)).to.contains('voicings');
+      expect(suggestions.map(x => x.text)).to.contains('devices');
+      expect(suggestions.map(x => x.text)).to.contains('performances');
   });    
 });
